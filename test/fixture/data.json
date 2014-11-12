@@ -1,3 +1,17 @@
 {
-  "name": "fixture"
+  "name": "fixture",
+  "maps": [
+    {
+      "url": "/people",
+      "method": "get",
+      "response": [
+        "Amy",
+        "Bob",
+        "Cindy",
+        "Dan",
+        "Ellen",
+        "Fisher"
+      ]
+    }
+  ]
 }

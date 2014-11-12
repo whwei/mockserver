@@ -6,7 +6,9 @@ _ = require 'underscore'
 express = require 'express'
 
 
-MockServer = {}
+MockServer = 
+  maps: []
+
 defaultOpt = 
   port: 8989
 
@@ -16,6 +18,7 @@ MockServer.createServer = (dataPath, optionPath) ->
   if !dataPath
     throw new Error 'IllegallArgument: mock data requried'
 
+  # read mock data
   mockData = {};
   try
     dataPath = path.resolve __dirname, dataPath
@@ -23,6 +26,7 @@ MockServer.createServer = (dataPath, optionPath) ->
   catch e
     throw new Error 'IllegallArgument: invalid mock data path'
 
+  # read option file
   option = {}
   if optionPath
     try
@@ -34,10 +38,24 @@ MockServer.createServer = (dataPath, optionPath) ->
   MockServer.option = _.extend(defaultOpt, option)
 
 
+  # init server 
   app = express()
+
+  # route
+  if (!mockData.maps) throw new Error 'Invalid mapping data'
+
+  mockData.maps.forEach (m, i) ->
+    MockServer.addMap m
 
   return app.listen MockServer.port
   
+
+# add a map to the server
+MockServer.addMap = (map) ->
+  if !map 
+    throw new Error 'map is required'
+
   
+
 
 exports.MockServer = MockServer
