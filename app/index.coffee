@@ -2,6 +2,7 @@ http = require 'http'
 fs = require 'fs'
 path = require 'path'
 _ = require 'underscore'
+hostile = require 'hostile'
 
 express = require 'express'
 
@@ -23,6 +24,7 @@ MockServer.createServer = (dataPath, optionPath) ->
   try
     dataPath = path.resolve __dirname, dataPath
     mockData = fs.readFileSync dataPath
+    mockData = JSON.parse mockData
   catch e
     throw new Error 'IllegallArgument: invalid mock data path'
 
@@ -34,28 +36,66 @@ MockServer.createServer = (dataPath, optionPath) ->
       option = fs.readFileSync optionPath
       option = JSON.parse option
     catch e
+      console.error 'fail to load option file, use default option'
 
   MockServer.option = _.extend(defaultOpt, option)
 
 
   # init server 
-  app = express()
+  this.app = express()
 
   # route
-  if (!mockData.maps) throw new Error 'Invalid mapping data'
+  if !mockData.maps 
+    throw new Error 'Invalid mapping data'
 
-  mockData.maps.forEach (m, i) ->
-    MockServer.addMap m
+  mockData.maps.forEach (map, i) ->
+    MockServer.addMap map
 
-  return app.listen MockServer.port
+  # modify hosts
+  MockServer.addHosts()
+
+  return this.app.listen MockServer.port, ->
+    "listening at port: #{MockServer.option.port}"
   
+
+MockServer.close = ->
+  MockServer.removeHosts()
+  console.log "server at port #{MockServer.option.port} closed."
+
 
 # add a map to the server
 MockServer.addMap = (map) ->
   if !map 
     throw new Error 'map is required'
 
-  
+  method = map['method'] || 'get'
+  url = map['url'] || '/'
+  response = map['response']
+
+  this.app[method] url, (req, res) ->
+     res.json response
+
+
+# modify hosts
+MockServer.addHosts = ->
+  target = MockServer.option.targetDomain;
+
+  hostile.set '127.0.0.1', target, (e)->
+    if e
+      console.error e
+    else
+      console.log "set #{target} successfully."
+
+
+MockServer.removeHosts = ->
+  target = MockServer.option.targetDomain;
+
+  hostile.remove '127.0.0.1', target, (e)->
+    if e
+      console.error e
+    else
+      console.log "remove #{target} successfully."
+
 
 
 exports.MockServer = MockServer
