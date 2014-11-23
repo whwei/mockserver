@@ -2,11 +2,11 @@ gulp = require 'gulp'
 mocha = require 'gulp-spawn-mocha'
 
 gulp.task 'default', ['watch-test']
-  
+
 
 gulp.task 'test', ->
-  gulp.src 'test/**/hostz.spec.coffee'
+    gulp.src 'test/**/hostz.spec.coffee'
     .pipe(mocha {reporter: 'nyan'})
 
 gulp.task 'watch-test', ->
-  gulp.watch ['app/**/*.coffee', 'test/**/*.spec.coffee'], ['test']
+    gulp.watch ['app/**/*.coffee', 'test/**/*.spec.coffee'], ['test']
