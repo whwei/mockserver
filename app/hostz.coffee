@@ -10,22 +10,16 @@ hosts = if isWindows then 'C:Windows/System32/drivers/etc/hosts' else '/etc/host
 
 hostz =
     backup: ->
-        r = fs.createReadStream hosts
-        w = fs.createWriteStream "#{hosts}.backup",
-            flags: 'w',
-            mode: 0o666
+        content = fs.readFileSync hosts
+        fs.writeFileSync "#{hosts}.backup", content
 
-        r.pipe w
 
 
     restore: ->
-        if fs.existsSync "#{hosts}.backup" is true
-            r = fs.createReadStream "#{hosts}.backup"
-            w = fs.createWriteStream hosts,
-                flags: 'w',
-                mode: 0o666
-
-            r.pipe w
+        if fs.existsSync "#{hosts}.backup"
+            backup = fs.readFileSync "#{hosts}.backup"
+            fs.writeFileSync hosts, backup
+            fs.unlink "#{hosts}.backup"
             return true
         else
             return false
@@ -47,10 +41,18 @@ hostz =
         lines = hostz.get()
 
         exist = lines.some (line) ->
-            splitLine = line.trim().split /\s+/
+            splitLine = line.map (item) ->
+                return item.trim()
             return splitLine[0] is ip and splitLine[1] is domain
 
-        lines.push "#{ip} #{domain}" if not exist
+        lines.push [ip, domain] if not exist
+
+        # write to hosts file
+        content =  lines.reduce (data, line) ->
+            return "#{data}\n#{line.join(' ')}";
+        ,
+            ''
+        fs.writeFileSync hosts, content
 
         return exist
 

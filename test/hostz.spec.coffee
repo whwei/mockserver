@@ -10,6 +10,7 @@ describe 'hostz', ->
     afterEach ->
         hostz.restore()
 
+
     it '#backup should create a hosts backup', () ->
         backup = "#{hostile.HOSTS}.backup"
 
@@ -51,16 +52,28 @@ describe 'hostz', ->
 
 
     it '#restore should restore from the hosts.backup file', () ->
-        result = hostz.restore()
-        console.log "restore: " + result
-        if result is true
-            hostsContent = fs.readFileSync hostile.HOSTS
-            backupContent = fs.readFileSync "#{hostile.HOSTS}.backup"
 
-            expect hostsContent
-                .to.be backupContent
+        hostz.backup()
 
-    it '#get should return current hosts file content', (cb) ->
+        expect fs.existsSync "#{hostile.HOSTS}.backup"
+            .to.be.true()
+
+        original = fs.readFileSync hostile.HOSTS
+
+        fs.writeFileSync hostile.HOSTS, 'empty'
+        modified = fs.readFileSync hostile.HOSTS
+
+        expect original
+            .not.to.eql modified
+
+        hostz.restore()
+
+        restored = fs.readFileSync hostile.HOSTS
+        expect original
+            .to.eql restored
+
+
+    it '#get should return current hosts file content', () ->
         hostile.get false, (err, content) ->
 
             lines = hostz.get()
@@ -70,15 +83,24 @@ describe 'hostz', ->
             expect lines
             .to.eql currentHostsContent
 
-            cb()
 
 
-    it '#add should add "#{ip} #{domain}" pair to the hosts file', ()->
+    it '#add should add "#{ip} #{domain}" pair to the hosts file', () ->
 
         original = hostz.get()
+        include = original.some (line) ->
+            return line[0] is '123.123.123.123' and line[1] is 'example.com'
 
-        expect original
-            .not.include [['123.123.123.123'], ['example.com']]
+        expect include
+            .to.be.false()
 
+        hostz.add '123.123.123.123', 'example.com'
+
+        current = hostz.get()
+        include = current.some (line) ->
+            return line[0] is '123.123.123.123' and line[1] is 'example.com'
+
+        expect include
+            .to.be.true()
 
 

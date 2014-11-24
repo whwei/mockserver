@@ -1,5 +1,6 @@
 {
     "name": "fixture",
+    "domain": "example.com",
     "maps": [
         {
             "url": "/people",

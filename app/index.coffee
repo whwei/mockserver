@@ -78,7 +78,7 @@ MockServer.addMap = (map) ->
 
 # modify hosts
 MockServer.addHosts = ->
-    target = MockServer.option.targetDomain;
+    target = MockServer.option.domain;
 
     hostile.set '127.0.0.1', target, (e)->
         if e
@@ -88,7 +88,7 @@ MockServer.addHosts = ->
 
 
 MockServer.removeHosts = ->
-    target = MockServer.option.targetDomain;
+    target = MockServer.option.domain;
 
     hostile.remove '127.0.0.1', target, (e)->
         if e
