@@ -5,7 +5,7 @@ gulp.task 'default', ['watch-test']
 
 
 gulp.task 'test', ->
-    gulp.src 'test/**/hostz.spec.coffee'
+    gulp.src 'test/**/mockserver.spec.coffee'
     .pipe(mocha {reporter: 'nyan'})
 
 gulp.task 'watch-test', ->

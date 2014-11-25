@@ -1,4 +1,4 @@
-ms = require('../app/index').MockServer
+MockServer = require('../app/mockserver').MockServer
 http = require 'http'
 hostile = require 'hostile'
 supertest = require 'supertest'
@@ -8,18 +8,19 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach ->
-            server = ms.createServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
 
         afterEach ->
-            ms.close()
+            server.close()
 
-        it 'should return a instance of http.Server', ->
-            expect server
-            .to.be.instanceof http.Server
+        it 'should create a instance of http.Server',  ->
+            expect server.server()
+                .to.be.instanceof http.Server
+
 
         it 'accept mock data and a optional option', ->
             try
-                expect ms.createServer()
+                expect new MockServer()
                 .to.throw 'IllegallArgument: mock data requried'
             catch e
 

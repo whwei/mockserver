@@ -1,9 +1,8 @@
 {
     "name": "fixture",
-    "domain": "example.com",
     "maps": [
         {
-            "url": "/people",
+            "path": "/people",
             "method": "get",
             "response": [
                 "Amy",
