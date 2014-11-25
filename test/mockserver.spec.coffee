@@ -1,5 +1,6 @@
 MockServer = require('../app/mockserver').MockServer
 http = require 'http'
+fs = require 'fs'
 hostile = require 'hostile'
 supertest = require 'supertest'
 
@@ -25,24 +26,98 @@ describe 'MockServer', ->
             catch e
 
 
+    describe 'server#backupHosts', ->
+        it 'should backup hosts file', () ->
+            exist = 0;
+            try
+                fs.readFileSync "#{hostile.HOSTS}.backup", 'utf-8'
+            catch e
+                exist = 1
+
+            expect exist
+                .to.eql 1
+
+            original = 'original'
+            original = fs.readFileSync hostile.HOSTS, 'utf-8'
+
+            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+
+
+            backup = 'backup'
+            try
+                backup = fs.readFileSync "#{hostile.HOSTS}.backup", 'utf-8'
+            catch e
+                exist = 2
+
+            expect exist
+                .to.eql 1
+
+            expect original
+                .to.eql backup
+
+            server.close()
+
+
+    describe 'server#restoreHosts', ->
+        it 'should backup hosts file', () ->
+            exist = 0;
+            try
+                fs.readFileSync "#{hostile.HOSTS}.backup", 'utf-8'
+            catch e
+                exist = 1
+
+            expect exist
+                .to.eql 1
+
+            original = 'original'
+            original = fs.readFileSync hostile.HOSTS, 'utf-8'
+
+            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server.restoreHosts()
+
+            current = 'backup'
+            try
+                current = fs.readFileSync hostile.HOSTS, 'utf-8'
+            catch e
+                exist = 2
+
+            expect exist
+                .to.eql 1
+
+            expect original
+                .to.eql current
+
+            server.close()
+
+
+    describe 'server#addHosts', ->
+        server = null;
+
+        beforeEach ->
+            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+
+        afterEach ->
+            server.close()
+
+        it 'should add rule to hosts file', () ->
+            hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
+
+            expect hostsContent
+                .to.contain '127.0.0.1 example.com'
 
 
 
-            # it 'should store maps in MockServer.maps'
+    describe 'server#addHosts', ->
+        server = null;
 
+        beforeEach ->
+            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
 
-            # it 'should extend option with defaultOption'
-            #   server
+        afterEach ->
+            server.close()
 
+        it 'should add rule to hosts file', () ->
+            hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            # describe '#addHosts', ->
-            #   server = null;
-
-            #   it 'should add rule to hosts file', (cb)->
-            #     hostile.get false, (err, lines)->
-            #       expect err
-            #         .to.be.null
-
-            #       expect(lines.some (line) -> ~line.indexOf 'example.com').to.be.false
-
-            #       cb()
+            expect hostsContent
+            .to.contain '127.0.0.1 example.com'

@@ -62,6 +62,7 @@ class MockServer
     server: ->
         return @_server;
 
+
     close: ->
         console.log "server at port #{@_option.port} closed."
         @restoreHosts()
@@ -72,7 +73,7 @@ class MockServer
     addMap: (map) ->
         if !map
             throw new Error 'map is required'
-        console.log map
+
         method = map['method'] ? 'get'
         path = map['path'] ? '/'
         response = map['response']
