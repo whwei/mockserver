@@ -103,7 +103,7 @@ describe 'MockServer', ->
             hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
 
             expect hostsContent
-                .to.contain '127.0.0.1 www.example.com'
+                .to.contain '127.0.0.1 api.interfacedomain.com'
 
 
 
@@ -120,7 +120,7 @@ describe 'MockServer', ->
             hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
 
             expect hostsContent
-            .to.contain '127.0.0.1 www.example.com'
+            .to.contain '127.0.0.1 api.interfacedomain.com'
 
 
 
@@ -156,3 +156,12 @@ describe 'MockServer', ->
                     if not exists
                         throw new Error 'post data missing'
                 .end(cb)
+
+        it 'should intercept the request and respond corresponding data', (cb) ->
+            localRequest = request 'http://api.interfacedomain.com'
+
+            localRequest.get '/people'
+                .expect 200, (err) ->
+                    expect err
+                        .to.be.null()
+                    cb()

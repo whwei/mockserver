@@ -56,5 +56,4 @@ hostz =
 
         return exist
 
-
 module.exports = hostz

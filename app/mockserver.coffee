@@ -11,7 +11,7 @@ MockServer =
     maps: []
 
 defaultOpt =
-    port: 8989
+    port: 80
 
 
 class MockServer
@@ -55,15 +55,18 @@ class MockServer
         # modify hosts
         @addHosts()
 
-        @_server = @_app.listen MockServer.port, =>
-            "listening at port: #{@_option.port}"
+        @_server = @_app.listen @_option.port, =>
+            console.log "listening at port: #{@_option.port}"
 
 
     server: ->
         return @_server;
 
 
+
     close: ->
+        if @_server
+            @_server.close()
         console.log "server at port #{@_option.port} closed."
         @restoreHosts()
 
