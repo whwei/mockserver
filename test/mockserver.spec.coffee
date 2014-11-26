@@ -2,7 +2,7 @@ MockServer = require('../app/mockserver').MockServer
 http = require 'http'
 fs = require 'fs'
 hostile = require 'hostile'
-supertest = require 'supertest'
+request = require 'supertest'
 
 describe 'MockServer', ->
     describe '#createServer', ->
@@ -103,7 +103,7 @@ describe 'MockServer', ->
             hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
 
             expect hostsContent
-                .to.contain '127.0.0.1 example.com'
+                .to.contain '127.0.0.1 www.example.com'
 
 
 
@@ -120,4 +120,39 @@ describe 'MockServer', ->
             hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
 
             expect hostsContent
-            .to.contain '127.0.0.1 example.com'
+            .to.contain '127.0.0.1 www.example.com'
+
+
+
+    describe 'set up a local server', ->
+        server = null;
+
+        beforeEach ->
+            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+
+        afterEach ->
+            server.close()
+
+        it 'respond users when request /people', (cb) ->
+            request server.server()
+                .get '/people'
+                .expect 200
+                .expect (res) ->
+                    if !res.body or res.body.length != 6
+                        throw new Error 'unexpected response data'
+                .end(cb)
+
+        it 'respond posts when request /pots', (cb) ->
+            request server.server()
+                .get '/posts'
+                .expect 200
+                .expect (res) ->
+                    if !res.body or res.body.length != 8
+                        throw new Error 'unexpected response data'
+
+                    exists = res.body.some (post) ->
+                        post.title is "Post Title 2" and post.date is 1416962762128 and post.author is '000001' and post.content is 'balblablalbalblab'
+
+                    if not exists
+                        throw new Error 'post data missing'
+                .end(cb)

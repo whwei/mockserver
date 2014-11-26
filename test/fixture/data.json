@@ -5,12 +5,84 @@
             "path": "/people",
             "method": "get",
             "response": [
-                "Amy",
-                "Bob",
-                "Cindy",
-                "Dan",
-                "Ellen",
-                "Fisher"
+                {
+                    "id": "000001",
+                    "name": "Amy"
+                },
+                {
+                    "id": "000002",
+                    "name": "Bob"
+                },
+                {
+                    "id": "000003",
+                    "name": "Cindy"
+                },
+                {
+                    "id": "000004",
+                    "name": "Dan"
+                },
+                {
+                    "id": "000005",
+                    "name": "Elan"
+                },
+                {
+                    "id": "000006",
+                    "name": "Fisher"
+                }
+            ]
+        },
+        {
+            "path": "/posts",
+            "method": "get",
+            "response": [
+                {
+                    "title": "Post Title 1",
+                    "date": 1416962762128,
+                    "author": "000001",
+                    "content": "balblablalbalblab"
+                },
+                {
+                    "title": "Post Title 2",
+                    "date": 1416962762128,
+                    "author": "000001",
+                    "content": "balblablalbalblab"
+                },
+                {
+                    "title": "Post Title 3",
+                    "date": 1416962762128,
+                    "author": "000002",
+                    "content": "balblablalbalblab"
+                },
+                {
+                    "title": "Post Title 4",
+                    "date": 1416962762128,
+                    "author": "000003",
+                    "content": "balblablalbalblab"
+                },
+                {
+                    "title": "Post Title 5",
+                    "date": 1416962762128,
+                    "author": "000004",
+                    "content": "balblablalbalblab"
+                },
+                {
+                    "title": "Post Title 6",
+                    "date": 1416962762128,
+                    "author": "000004",
+                    "content": "balblablalbalblab"
+                },
+                {
+                    "title": "Post Title 7",
+                    "date": 1416962762128,
+                    "author": "000005",
+                    "content": "balblablalbalblab"
+                },
+                {
+                    "title": "Post Title 8",
+                    "date": 1416962762128,
+                    "author": "000006",
+                    "content": "balblablalbalblab"
+                }
             ]
         }
     ]
