@@ -58,6 +58,12 @@ class MockServer
         @_server = @_app.listen @_option.port, =>
             console.log "listening at port: #{@_option.port}"
 
+        # bind events
+        signal = ['SIGTERM', 'SIGINT']
+        signal.forEach (s) =>
+            process.on s, =>
+                @close()
+
 
     server: ->
         return @_server;
@@ -66,8 +72,10 @@ class MockServer
 
     close: ->
         if @_server
-            @_server.close()
-        console.log "server at port #{@_option.port} closed."
+            @_server.close =>
+                console.log "server at port #{@_option.port} closed."
+                process.exit 0
+
         @restoreHosts()
 
 

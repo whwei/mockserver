@@ -157,7 +157,7 @@ describe 'MockServer', ->
                         throw new Error 'post data missing'
                 .end(cb)
 
-        it 'should intercept the request and respond corresponding data', (cb) ->
+        it 'should intercept the request and respond corresponding mock data', (cb) ->
             localRequest = request 'http://api.interfacedomain.com'
 
             localRequest.get '/people'
