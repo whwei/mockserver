@@ -84,6 +84,14 @@
                     "content": "balblablalbalblab"
                 }
             ]
+        },
+        {
+            "path": "/people",
+            "method": "post",
+            "response": {
+                "id": "000007",
+                "name": "Gary"
+            }
         }
     ]
 }

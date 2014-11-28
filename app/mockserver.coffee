@@ -1,6 +1,4 @@
 http = require 'http'
-fs = require 'fs'
-path = require 'path'
 _ = require 'underscore'
 hostz = require './hostz'
 
@@ -12,6 +10,7 @@ MockServer =
 
 defaultOpt =
     port: 80
+    log: false
 
 
 class MockServer
@@ -25,7 +24,6 @@ class MockServer
         try
             mockData = require dataPath
         catch e
-            console.log e
             throw new Error 'IllegallArgument: invalid mock data path'
 
         # read option file
@@ -34,10 +32,14 @@ class MockServer
             try
                 option = require optionPath
             catch e
-                console.log e
                 console.error 'fail to load option file, use default option'
 
         @_option = _.extend(defaultOpt, option)
+
+        originalLog = console.log
+        console.log = () =>
+            if @_option.log
+                originalLog.apply console, arguments
 
         # init server
         @_app = express()
@@ -58,12 +60,6 @@ class MockServer
         @_server = @_app.listen @_option.port, =>
             console.log "listening at port: #{@_option.port}"
 
-        # bind events
-        signal = ['SIGTERM', 'SIGINT']
-        signal.forEach (s) =>
-            process.on s, =>
-                @close()
-
 
     server: ->
         return @_server;
@@ -74,7 +70,7 @@ class MockServer
         if @_server
             @_server.close =>
                 console.log "server at port #{@_option.port} closed."
-                process.exit 0
+
 
         @restoreHosts()
 

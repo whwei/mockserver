@@ -2,7 +2,6 @@ MockServer = require('../app/mockserver').MockServer
 http = require 'http'
 fs = require 'fs'
 hostile = require 'hostile'
-request = require 'supertest'
 
 describe 'MockServer', ->
     describe '#createServer', ->
@@ -22,7 +21,7 @@ describe 'MockServer', ->
         it 'accept mock data and a optional option', ->
             try
                 expect new MockServer()
-                .to.throw 'IllegallArgument: mock data requried'
+                .to.throw 'IllegallArgument: mock data required'
             catch e
 
 
@@ -123,7 +122,6 @@ describe 'MockServer', ->
             .to.contain '127.0.0.1 api.interfacedomain.com'
 
 
-
     describe 'set up a local server', ->
         server = null;
 
@@ -133,7 +131,18 @@ describe 'MockServer', ->
         afterEach ->
             server.close()
 
-        it 'respond users when request /people', (cb) ->
+
+        it 'should intercept the request and respond corresponding mock data', (cb) ->
+            localRequest = request 'http://api.interfacedomain.com'
+
+            localRequest.get '/people'
+            .expect 200, (err) ->
+                expect err
+                .to.be.null()
+                cb()
+
+
+        it 'respond users when get /people', (cb) ->
             request server.server()
                 .get '/people'
                 .expect 200
@@ -142,7 +151,8 @@ describe 'MockServer', ->
                         throw new Error 'unexpected response data'
                 .end(cb)
 
-        it 'respond posts when request /pots', (cb) ->
+
+        it 'respond posts when get /pots', (cb) ->
             request server.server()
                 .get '/posts'
                 .expect 200
@@ -157,11 +167,9 @@ describe 'MockServer', ->
                         throw new Error 'post data missing'
                 .end(cb)
 
-        it 'should intercept the request and respond corresponding mock data', (cb) ->
+
+        it 'should support CORS', ->
             localRequest = request 'http://api.interfacedomain.com'
 
-            localRequest.get '/people'
-                .expect 200, (err) ->
-                    expect err
-                        .to.be.null()
-                    cb()
+            localRequest.post '/people'
+            .expect 200
