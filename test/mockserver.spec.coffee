@@ -168,8 +168,11 @@ describe 'MockServer', ->
                 .end(cb)
 
 
-        it 'should support CORS', ->
+        it 'should support CORS', (cb) ->
             localRequest = request 'http://api.interfacedomain.com'
 
             localRequest.post '/people'
-            .expect 200
+                .expect 200
+                .expect (res) ->
+                    console.info res
+                .end(cb)

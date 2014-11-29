@@ -10,8 +10,16 @@ MockServer =
 
 defaultOpt =
     port: 80
+    cors: true
     log: false
 
+
+corsMiddleWare = (req, res, next) ->
+    res.header 'Access-Control-Allow-Origin', '*'
+    res.header 'Access-Control-Allow-Method', 'GET, PUT, POST, DELETE'
+    res.header 'Access-Control-Allow-Header', 'Content-Type'
+
+    next()
 
 class MockServer
     constructor: (dataPath, optionPath) ->
@@ -43,6 +51,10 @@ class MockServer
 
         # init server
         @_app = express()
+
+        # CORS
+        if @_option.cors is true
+            @_app.use corsMiddleWare
 
         # route
         if !mockData.maps
