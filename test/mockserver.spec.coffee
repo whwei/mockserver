@@ -174,5 +174,13 @@ describe 'MockServer', ->
             localRequest.post '/people'
                 .expect 200
                 .expect (res) ->
-                    console.info res
+                    if res.headers['access-control-allow-origin'] isnt '*'
+                        throw new Error 'access-control-allow-origin not set'
+
+                    if res.headers['access-control-allow-method'] isnt 'GET, PUT, POST, DELETE'
+                        throw new Error 'access-control-allow-method not set'
+
+                    if res.header['access-control-allow-header'] isnt 'Content-Type'
+                        throw new Error 'access-control-allow-header not set'
+
                 .end(cb)
