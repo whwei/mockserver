@@ -1,4 +1,4 @@
-hostz = require '../app/hostz'
+hostz = require './hostz'
 hostile = require 'hostile'
 fs = require 'fs'
 

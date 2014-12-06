@@ -1,16 +1,17 @@
 {
   "name": "MockServer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "mock http request",
-  "main": "index.js",
+  "main": "bin/command.js",
+  "preferGlobal": true,
   "bin": {
-    "mock": "build/index.js"
+    "mockserver": "bin/command.js"
   },
   "scripts": {
     "test": "mocha"
   },
   "author": "whwei",
-  "license": "ISC",
+  "license": "BSD",
   "devDependencies": {
     "chai": "^1.9.2",
     "gulp": "~3.8.10",

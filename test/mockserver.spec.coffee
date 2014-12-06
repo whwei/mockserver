@@ -1,4 +1,4 @@
-MockServer = require('../app/mockserver').MockServer
+MockServer = require('./mockserver').MockServer
 http = require 'http'
 fs = require 'fs'
 hostile = require 'hostile'

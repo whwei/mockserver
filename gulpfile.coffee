@@ -9,15 +9,18 @@ gulp.task 'build', ->
 
 
 gulp.task 'compile-coffee', ->
-    gulp.src 'app/**/*.coffee'
+    gulp.src 'src/**/*.coffee'
     .pipe coffee({bare: true})
     .on 'error', (err) ->
         console.log err
     .pipe gulp.dest('build/')
+
+gulp.task 'watch', ->
+    gulp.watch 'src/**/*.coffee', ['compile-coffee']
 
 gulp.task 'test', ->
     gulp.src 'test/**/*.spec.coffee'
     .pipe(mocha {reporter: 'nyan'})
 
 gulp.task 'watch-test', ->
-    gulp.watch ['app/**/*.coffee', 'test/**/*.spec.coffee'], ['test']
+    gulp.watch ['src/**/*.coffee', 'test/**/*.spec.coffee'], ['test']
