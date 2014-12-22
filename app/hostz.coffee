@@ -6,7 +6,7 @@ COMMENT_REG = /\s*#.*/
 
 isWindows = process.platform is 'win32'
 
-hosts = if isWindows then 'C:Windows/System32/drivers/etc/hosts' else '/etc/hosts'
+hosts = if isWindows then 'C:\Windows\System32\drivers\etc\hosts' else '/etc/hosts'
 
 hostz =
     backup: ->
@@ -19,7 +19,7 @@ hostz =
         if fs.existsSync "#{hosts}.backup"
             backup = fs.readFileSync "#{hosts}.backup"
             fs.writeFileSync hosts, backup
-            fs.unlink "#{hosts}.backup"
+            fs.unlinkSync "#{hosts}.backup"
             return true
         else
             return false
