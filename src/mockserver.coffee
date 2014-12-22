@@ -11,7 +11,7 @@ MockServer =
 defaultOpt =
     port: 80
     cors: true
-    log: false
+    log: true
 
 
 corsMiddleWare = (req, res, next) ->
@@ -82,7 +82,6 @@ class MockServer
         if @_server
             @_server.close =>
                 console.log "server at port #{@_option.port} closed."
-
 
         @restoreHosts()
 
