@@ -8,7 +8,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach () ->
-            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server = new MockServer '../test/fixture/data.json'
 
         afterEach () ->
             server.close()
@@ -43,7 +43,7 @@ describe 'MockServer', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server = new MockServer '../test/fixture/data.json'
 
 
             backup = 'backup'
@@ -75,7 +75,7 @@ describe 'MockServer', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server = new MockServer '../test/fixture/data.json'
             server.restoreHosts()
 
             current = 'backup'
@@ -97,7 +97,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server = new MockServer '../test/fixture/data.json'
 
         afterEach ->
             server.close()
@@ -114,7 +114,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server = new MockServer '../test/fixture/data.json'
 
         afterEach ->
             server.close()
@@ -130,7 +130,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', '../test/fixture/option.json'
+            server = new MockServer '../test/fixture/data.json'
 
         afterEach ->
             server.close()

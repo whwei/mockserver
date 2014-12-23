@@ -22,27 +22,21 @@ corsMiddleWare = (req, res, next) ->
     next()
 
 class MockServer
-    constructor: (dataPath, optionPath) ->
+    constructor: (dataPath, option) ->
 
         if !dataPath
-            throw new Error 'IllegallArgument: mock data requried'
+            throw new Error 'mock data requried'
 
         # read mock data
         mockData = {};
         try
             mockData = require dataPath
         catch e
-            throw new Error 'IllegallArgument: invalid mock data path'
-
-        # read option file
-        option = {}
-        if optionPath
-            try
-                option = require optionPath
-            catch e
-                console.error 'fail to load option file, use default option'
+            console.error "fail to load data: #{dataPath}"
+            throw e
 
         @_option = _.extend(defaultOpt, option)
+        @_option.domain = mockData.domain
 
         originalLog = console.log
         console.log = () =>
