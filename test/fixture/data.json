@@ -93,6 +93,37 @@
                 "id": "000007",
                 "name": "Gary"
             }
+        },
+        {
+            "path": "/people_jsonp",
+            "method": "get",
+            "type": "jsonp",
+            "response": [
+                {
+                    "id": "000001",
+                    "name": "Amy"
+                },
+                {
+                    "id": "000002",
+                    "name": "Bob"
+                },
+                {
+                    "id": "000003",
+                    "name": "Cindy"
+                },
+                {
+                    "id": "000004",
+                    "name": "Dan"
+                },
+                {
+                    "id": "000005",
+                    "name": "Elan"
+                },
+                {
+                    "id": "000006",
+                    "name": "Fisher"
+                }
+            ]
         }
     ]
 }

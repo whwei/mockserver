@@ -8,7 +8,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach () ->
-            server = new MockServer '../test/fixture/data.json'
+            server = new MockServer '../test/fixture/data.json', {log: false}
 
         afterEach () ->
             server.close()
@@ -43,7 +43,7 @@ describe 'MockServer', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json'
+            server = new MockServer '../test/fixture/data.json', {log: false}
 
 
             backup = 'backup'
@@ -75,7 +75,7 @@ describe 'MockServer', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json'
+            server = new MockServer '../test/fixture/data.json', {log: false}
             server.restoreHosts()
 
             current = 'backup'
@@ -97,7 +97,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json'
+            server = new MockServer '../test/fixture/data.json', {log: false}
 
         afterEach ->
             server.close()
@@ -114,7 +114,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json'
+            server = new MockServer '../test/fixture/data.json', {log: false}
 
         afterEach ->
             server.close()
@@ -130,7 +130,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json'
+            server = new MockServer '../test/fixture/data.json', {log: false}
 
         afterEach ->
             server.close()
@@ -188,3 +188,15 @@ describe 'MockServer', ->
                         throw new Error 'access-control-allow-header not set'
 
                 .end(cb)
+
+
+        it 'should support jsonp', (cb) ->
+            localRequest = request 'http://api.interfacedomain.com'
+
+            localRequest.get '/people_jsonp?callback=cbFn'
+            .expect 200
+            .expect (res) ->
+                if res.headers['content-type'] isnt 'application/javascript'
+                    throw new Error 'Content-type not application/javascript'
+
+            .end(cb)

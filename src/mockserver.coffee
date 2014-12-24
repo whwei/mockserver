@@ -1,7 +1,7 @@
 http = require 'http'
 _ = require 'underscore'
 hostz = require './hostz'
-
+url = require 'url'
 express = require 'express'
 
 
@@ -91,7 +91,13 @@ class MockServer
         response = map['response']
 
         @_app[method] path, (req, res) ->
-            res.json response
+            if map['type'] is 'jsonp'
+                query = url.parse(req.url, true).query
+                cb = query['callback'] or query['cb']
+                res.setHeader 'Content-Type', 'application/javascript'
+                res.end "(#{cb} && #{cb}(#{JSON.stringify(response)}))"
+            else
+                res.json response
 
 
     # add hosts
