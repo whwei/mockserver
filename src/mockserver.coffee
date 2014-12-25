@@ -2,6 +2,7 @@ http = require 'http'
 _ = require 'underscore'
 hostz = require './hostz'
 url = require 'url'
+colors = require 'colors'
 express = require 'express'
 
 
@@ -32,7 +33,7 @@ class MockServer
         try
             mockData = require dataPath
         catch e
-            console.error "fail to load data: #{dataPath}"
+            console.error "fail to load data: #{dataPath}".red
             throw e
 
         @_option = _.extend(defaultOpt, option)
@@ -64,7 +65,8 @@ class MockServer
         @addHosts()
 
         @_server = @_app.listen @_option.port, =>
-            console.log "listening at port: #{@_option.port}"
+            console.log "Starting up server at port: #{@_option.port}".yellow
+            console.log 'Hit CTRL-C to stop the server'.yellow
 
 
     server: ->
@@ -75,7 +77,7 @@ class MockServer
     close: ->
         if @_server
             @_server.close =>
-                console.log "server at port #{@_option.port} closed."
+
 
         @restoreHosts()
 
@@ -91,15 +93,15 @@ class MockServer
         response = map['response']
 
         @_app[method] path, (req, res) ->
-            if map['type'] is 'jsonp'
-                query = url.parse(req.url, true).query
-                cb = query['callback'] or query['cb']
+            query = url.parse(req.url, true).query
+            cb = query['callback'] or query['cb']
 
-                if cb
-                    res.setHeader 'Content-Type', 'application/javascript'
-                    res.end "(#{cb} && #{cb}(#{JSON.stringify(response)}))"
-                else
-                    res.json response
+            # log req
+            console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
+
+            if map['type'] is 'jsonp' and cb
+                res.setHeader 'Content-Type', 'application/javascript'
+                res.end "#{cb}(#{JSON.stringify(response)})"
             else
                 res.json response
 
@@ -110,19 +112,16 @@ class MockServer
 
         try
             hostz.add '127.0.0.1', target
-            console.log "'127.0.0.1 #{target}' added successfully."
         catch e
             console.log e
 
     # backup hosts
     backupHosts: ->
         hostz.backup()
-        console.log 'backup hosts!'
 
     # restore hosts
     restoreHosts: ->
         hostz.restore()
-        console.log 'restore hosts!'
 
 
 
