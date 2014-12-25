@@ -94,8 +94,12 @@ class MockServer
             if map['type'] is 'jsonp'
                 query = url.parse(req.url, true).query
                 cb = query['callback'] or query['cb']
-                res.setHeader 'Content-Type', 'application/javascript'
-                res.end "(#{cb} && #{cb}(#{JSON.stringify(response)}))"
+
+                if cb
+                    res.setHeader 'Content-Type', 'application/javascript'
+                    res.end "(#{cb} && #{cb}(#{JSON.stringify(response)}))"
+                else
+                    res.json response
             else
                 res.json response
 
