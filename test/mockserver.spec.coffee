@@ -28,8 +28,8 @@ describe 'MockServer', ->
             cb()
 
 
-
-    describe 'server#backupHosts', ->
+describe 'server', ->
+    describe '#backupHosts', ->
         it 'should backup hosts file', () ->
             exist = 0;
             try
@@ -61,7 +61,7 @@ describe 'MockServer', ->
             server.close()
 
 
-    describe 'server#restoreHosts', ->
+    describe '#restoreHosts', ->
         it 'should backup hosts file', () ->
             exist = 0;
             try
@@ -93,7 +93,7 @@ describe 'MockServer', ->
             server.close()
 
 
-    describe 'server#addHosts', ->
+    describe '#addHosts', ->
         server = null;
 
         beforeEach ->
@@ -110,7 +110,7 @@ describe 'MockServer', ->
 
 
 
-    describe 'server#addHosts', ->
+    describe '#addHosts', ->
         server = null;
 
         beforeEach ->
@@ -126,7 +126,7 @@ describe 'MockServer', ->
             .to.contain '127.0.0.1 api.interfacedomain.com'
 
 
-    describe 'set up a local server', ->
+    describe 'should set up a local server', ->
         server = null;
 
         beforeEach ->
@@ -136,7 +136,7 @@ describe 'MockServer', ->
             server.close()
 
 
-        it 'should intercept the request and respond corresponding mock data', (cb) ->
+        it 'intercept the request and respond corresponding mock data', (cb) ->
             localRequest = request 'http://api.interfacedomain.com'
 
             localRequest.get '/people'
@@ -200,3 +200,75 @@ describe 'MockServer', ->
                     throw new Error 'Content-type not application/javascript'
 
             .end(cb)
+
+
+    describe 'should allow dynamic response', ->
+        server = null
+
+        beforeEach ->
+            server = new MockServer '../test/fixture/data.js', { log: false }
+
+        afterEach ->
+            server.close()
+
+        it 'should receive a data.js file',  ->
+            localRequest = request 'http://api.interfacedomain.com'
+
+            localRequest.get '/people'
+            .expect 200
+            .expect { id: 1, name: 'people 1'}
+
+
+        it 'should respond dynamically',  ->
+            localRequest = request 'http://api.interfacedomain.com'
+
+            localRequest.get '/people'
+            .expect 200
+            .expect { id: 1, name: 'people 1'}
+
+            localRequest.get '/people'
+            .expect 200
+            .expect { id: 2, name: 'people 2'}
+
+            localRequest.get '/people'
+            .expect 200
+            .expect { id: 3, name: 'people 3'}
+
+        it 'should respond by query',  ->
+            localRequest = request 'http://api.interfacedomain.com'
+
+            localRequest.get '/people'
+            .query('team', 'rockets')
+            .expect 200
+            .expect [
+                {
+                    number: 11,
+                    name: 'Yao Ming'
+                },
+                {
+                    number: 1,
+                    name: 'Tracy McGrady'
+                }
+            ]
+
+            localRequest.get '/people'
+            .query('team', 'lakers')
+            .expect 200
+            .expect [
+                {
+                    number: 24,
+                    name: 'Kobe Bryant'
+                },
+                {
+                    number: 0,
+                    name: 'Nick Young'
+                },
+                {
+                    number: 17,
+                    name: 'Jeremy Lin'
+                }
+            ]
+
+            localRequest.get '/people'
+            .expect 200
+            .expect []
