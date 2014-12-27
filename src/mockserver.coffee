@@ -91,22 +91,23 @@ class MockServer
         method = map['method'] ? 'get'
         path = map['path'] ? '/'
         response = map['response']
+        dataType = map['type']
 
-        if typeof response is 'function'
-            @_app[method] path, response
-        else
-            @_app[method] path, (req, res) ->
-                query = url.parse(req.url, true).query
-                cb = query['callback'] or query['cb']
+        @_app[method] path, (req, res) ->
+            query = url.parse(req.url, true).query
+            cb = query['callback'] or query['cb']
 
-                # log req
-                console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
+            if typeof response is 'function' and dataType is 'jsonp'
+                response = response(req)
 
-                if map['type'] is 'jsonp' and cb
-                    res.setHeader 'Content-Type', 'application/javascript'
-                    res.end "#{cb}(#{JSON.stringify(response)})"
-                else
-                    res.json response
+            # log req
+            console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
+
+            if dataType is 'jsonp' and cb
+                res.setHeader 'Content-Type', 'application/javascript'
+                res.end "#{cb}(#{JSON.stringify(response)})"
+            else
+                res.json response
 
 
     # add hosts

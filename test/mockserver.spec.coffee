@@ -193,7 +193,8 @@ describe 'server', ->
         it 'should support jsonp', (cb) ->
             localRequest = request 'http://api.interfacedomain.com'
 
-            localRequest.get '/people_jsonp?callback=cbFn'
+            localRequest.get '/people_jsonp'
+            .query { callback: 'cbFn'}
             .expect 200
             .expect (res) ->
                 if res.headers['content-type'] isnt 'application/javascript'
@@ -234,6 +235,33 @@ describe 'server', ->
             .expect 200
             .expect { id: 3, name: 'people 3'}
 
+
+        it 'should supoort dynamic jsonp request', () ->
+            localRequest = request 'http://api.interfacedomain.com'
+
+            localRequest.get '/people_jsonp'
+            .query { callback: 'cbFn'}
+            .expect 200
+            .expect (res) ->
+                if res.headers['content-type'] isnt 'application/javascript'
+                    throw new Error 'Content-type not application/javascript'
+
+                if res.body.id isnt 1 or res.body.name isnt 'people 1'
+                    throw new Error 'response content error: ' + JSON.stringify(res.body)
+
+
+            localRequest.get '/people_jsonp'
+            .query { callback: 'cbFn'}
+            .expect 200
+            .expect (res) ->
+                if res.headers['content-type'] isnt 'application/javascript'
+                    throw new Error 'Content-type not application/javascript'
+
+                if res.body.id isnt 2 or res.body.name isnt 'people 2'
+                    throw new Error 'response content error: ' + JSON.stringify(res.body)
+
+
+
         it 'should respond by query',  ->
             localRequest = request 'http://api.interfacedomain.com'
 
@@ -272,3 +300,5 @@ describe 'server', ->
             localRequest.get '/people'
             .expect 200
             .expect []
+
+
