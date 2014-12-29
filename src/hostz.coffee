@@ -6,7 +6,7 @@ COMMENT_REG = /\s*#.*/
 
 isWindows = process.platform is 'win32'
 
-hosts = if isWindows then 'C:\Windows\System32\drivers\etc\hosts' else '/etc/hosts'
+hosts = if isWindows then 'C:/Windows/System32/drivers/etc/hosts' else '/etc/hosts'
 
 hostz =
     backup: ->

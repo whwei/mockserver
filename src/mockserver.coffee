@@ -5,10 +5,6 @@ url = require 'url'
 colors = require 'colors'
 express = require 'express'
 
-
-MockServer =
-    maps: []
-
 defaultOpt =
     port: 80
     cors: true
@@ -76,7 +72,7 @@ class MockServer
 
     close: ->
         if @_server
-            @_server.close =>
+            @_server.close()
 
 
         @restoreHosts()
