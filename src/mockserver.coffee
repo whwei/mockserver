@@ -96,8 +96,9 @@ class MockServer
         @_app[method] path, (req, res) ->
             query = url.parse(req.url, true).query
             cb = query['callback'] or query['cb']
+            result = response
 
-            if typeof response is 'function' and dataType is 'jsonp'
+            if typeof response is 'function'
                 response = response(req)
 
             # log req
@@ -105,9 +106,9 @@ class MockServer
 
             if dataType is 'jsonp' and cb
                 res.setHeader 'Content-Type', 'application/javascript'
-                res.end "#{cb}(#{JSON.stringify(response)})"
+                res.end "#{cb}(#{JSON.stringify(result)})"
             else
-                res.json response
+                res.json result
 
 
     # add hosts
