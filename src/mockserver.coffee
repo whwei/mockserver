@@ -106,7 +106,7 @@ class MockServer
 
             if dataType is 'jsonp' and cb
                 res.setHeader 'Content-Type', 'application/javascript'
-                res.end "#{cb}(#{JSON.stringify(result)})"
+                res.end "#{cb}&&#{cb}(#{JSON.stringify(result)})"
             else
                 res.json result
 
