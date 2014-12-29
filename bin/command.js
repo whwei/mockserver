@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-var bootstrap = require('../src/index');
+var bootstrap = require('../build/index');
 
 bootstrap();
