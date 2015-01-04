@@ -6,7 +6,13 @@ MockServer = require('./mockserver').MockServer
 
 bootstrap = ->
 
+    opt = {}
+
     dir = path.join process.cwd(), (args.data || args.d ? '/data.js')
+
+    opt.port = args.port or args.p or 80
+    opt.modifyHosts = args.hosts or args.h
+    if opt.modifyHosts then opt.port = 80
 
     if not fs.existsSync dir
         dir = path.join process.cwd(), '/data.json'
@@ -15,7 +21,7 @@ bootstrap = ->
         console.log "invalid data path: #{dir}".red
         return;
 
-    server = new MockServer dir
+    server = new MockServer dir, opt
 
     process.on 'SIGINT', ()->
         server.close()

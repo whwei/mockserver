@@ -8,7 +8,7 @@ describe 'MockServer', ->
         server = null;
 
         beforeEach () ->
-            server = new MockServer '../test/fixture/data.json', {log: false}
+            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
 
         afterEach () ->
             server.close()
@@ -27,6 +27,25 @@ describe 'MockServer', ->
 
             cb()
 
+    describe '#createServer option', () ->
+        it 'should not modify the hosts file when param modifyHosts is false', ->
+            anotherServer = null
+
+            original = 'original'
+            original = fs.readFileSync hostile.HOSTS, 'utf-8'
+            try
+                anotherServer = new MockServer '../test/fixture/data.js', {modifyHosts: false, log: false}
+            catch e
+                console.log e
+
+            current = 'backup'
+            current = fs.readFileSync hostile.HOSTS, 'utf-8'
+
+            expect original
+            .to.eql current
+
+            if anotherServer
+                anotherServer.close()
 
 describe 'server', ->
     describe '#backupHosts', ->
@@ -43,7 +62,7 @@ describe 'server', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json', {log: false}
+            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
 
 
             backup = 'backup'
@@ -75,7 +94,7 @@ describe 'server', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json', {log: false}
+            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
             server.restoreHosts()
 
             current = 'backup'
@@ -97,7 +116,7 @@ describe 'server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', {log: false}
+            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
 
         afterEach ->
             server.close()
@@ -114,7 +133,7 @@ describe 'server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', {log: false}
+            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
 
         afterEach ->
             server.close()
@@ -130,7 +149,7 @@ describe 'server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', {log: false}
+            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
 
         afterEach ->
             server.close()
@@ -207,7 +226,7 @@ describe 'server', ->
         server = null
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.js', { log: false }
+            server = new MockServer '../test/fixture/data.js', {modifyHosts: true, log: false }
 
         afterEach ->
             server.close()

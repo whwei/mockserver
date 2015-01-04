@@ -54,11 +54,12 @@ class MockServer
         mockData.maps.forEach (map) =>
             @addMap map
 
-        # backup hosts
-        @backupHosts()
+        if @_option.modifyHosts
+            # backup hosts
+            @backupHosts()
 
-        # modify hosts
-        @addHosts()
+            # modify hosts
+            @addHosts()
 
         @_server = @_app.listen @_option.port, =>
             console.log "Starting up server at port: #{@_option.port}".yellow
@@ -74,8 +75,8 @@ class MockServer
         if @_server
             @_server.close()
 
-
-        @restoreHosts()
+        if @_option.modifyHosts
+            @restoreHosts()
 
 
 
