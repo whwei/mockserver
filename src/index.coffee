@@ -8,7 +8,7 @@ bootstrap = ->
 
     dir = path.join process.cwd(), (args.data || args.d ? '/data.js')
 
-    if not fs.existsSync dir and not args.data and not args.d
+    if not fs.existsSync dir
         dir = path.join process.cwd(), '/data.json'
 
     if not fs.existsSync dir
