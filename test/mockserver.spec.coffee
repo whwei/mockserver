@@ -4,7 +4,7 @@ fs = require 'fs'
 hostile = require 'hostile'
 
 describe 'MockServer', ->
-    describe '#createServer', () ->
+    describe '#createServer', ->
         server = null;
 
         beforeEach () ->
@@ -27,8 +27,8 @@ describe 'MockServer', ->
 
             cb()
 
-    describe '#createServer option', () ->
-        it 'should not modify the hosts file when param modifyHosts is false', ->
+    describe '#createServer option', ->
+        it 'should not modify the hosts file when param modifyHosts is false', (cb) ->
             anotherServer = null
 
             original = 'original'
@@ -45,7 +45,25 @@ describe 'MockServer', ->
             .to.eql current
 
             if anotherServer
-                anotherServer.close()
+                anotherServer.close cb
+
+
+
+        it 'should create a server at port specified by param port', (cb) ->
+            serverAtCustomPort = null
+
+            try
+                serverAtCustomPort = new MockServer '../test/fixture/data.js', { port: 9090, log: false }
+            catch e
+                console.log e
+
+            expect serverAtCustomPort.server().address().port
+            .to.eql 9090
+
+            if serverAtCustomPort
+                serverAtCustomPort.close cb
+
+
 
 describe 'server', ->
     describe '#backupHosts', ->
@@ -149,7 +167,7 @@ describe 'server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
+            server = new MockServer '../test/fixture/data.json', { modifyHosts: true, log: false }
 
         afterEach ->
             server.close()
@@ -159,10 +177,8 @@ describe 'server', ->
             localRequest = request 'http://api.interfacedomain.com'
 
             localRequest.get '/people'
-            .expect 200, (err) ->
-                expect err
-                .to.be.null()
-                cb()
+            .expect 200
+            .end cb
 
 
         it 'respond users when get /people', (cb) ->
@@ -172,10 +188,10 @@ describe 'server', ->
                 .expect (res) ->
                     if !res.body or res.body.length != 6
                         throw new Error 'unexpected response data'
-                .end(cb)
+                .end cb
 
 
-        it 'respond posts when get /pots', (cb) ->
+        it 'respond posts when get /posts', (cb) ->
             request server.server()
                 .get '/posts'
                 .expect 200
@@ -188,7 +204,7 @@ describe 'server', ->
 
                     if not exists
                         throw new Error 'post data missing'
-                .end(cb)
+                .end cb
 
 
         it 'should support CORS', (cb) ->
@@ -206,7 +222,7 @@ describe 'server', ->
                     if res.header['access-control-allow-header'] isnt 'Content-Type'
                         throw new Error 'access-control-allow-header not set'
 
-                .end(cb)
+                .end cb
 
 
         it 'should support jsonp', (cb) ->
@@ -219,7 +235,7 @@ describe 'server', ->
                 if res.headers['content-type'] isnt 'application/javascript'
                     throw new Error 'Content-type not application/javascript'
 
-            .end(cb)
+            .end cb
 
 
     describe 'should allow dynamic response', ->

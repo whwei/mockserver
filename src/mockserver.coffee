@@ -30,10 +30,12 @@ class MockServer
             mockData = require dataPath
         catch e
             console.error "fail to load data: #{dataPath}".red
-            throw e
 
-        @_option = _.extend(defaultOpt, option)
-        @_option.domain = mockData.domain
+        @_option = {}
+        @_option.domain = mockData.domain or 'localhost'
+        @_option.port = mockData.port or 80
+        @_option = _.extend(@_option, defaultOpt, option)
+        option = @_option
 
         originalLog = console.log
         console.log = () =>
@@ -61,7 +63,7 @@ class MockServer
             # modify hosts
             @addHosts()
 
-        @_server = @_app.listen @_option.port, =>
+        @_server = @_app.listen option.port, =>
             console.log "Starting up server at port: #{@_option.port}".yellow
             console.log 'Hit CTRL-C to stop the server'.yellow
 
@@ -71,9 +73,9 @@ class MockServer
 
 
 
-    close: ->
+    close: (cb)->
         if @_server
-            @_server.close()
+            @_server.close cb
 
         if @_option.modifyHosts
             @restoreHosts()
@@ -89,6 +91,13 @@ class MockServer
         path = map['path'] ? '/'
         response = map['response']
         dataType = map['type']
+        port = ":#{@_option.port}"
+
+#        if port is ':80' then port = ''
+#
+#        if method is 'get'
+#            path = "http://localhost#{port}#{map['path']}"
+#        console.warn 'method:' + method + ' at port:' + @_option.port + '  ++ map:' + map['path'] + ' --- path:' + path
 
         @_app[method] path, (req, res) ->
             query = url.parse(req.url, true).query
