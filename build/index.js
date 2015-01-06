@@ -11,12 +11,13 @@ path = require('path');
 MockServer = require('./mockserver').MockServer;
 
 bootstrap = function() {
-  var dir, modifyHosts, port, server, _ref;
+  var dir, opt, server, _ref;
+  opt = {};
   dir = path.join(process.cwd(), (_ref = args.data || args.d) != null ? _ref : '/data.js');
-  port = args.port || args.p || 80;
-  modifyHosts = args.hosts || args.h;
-  if (modifyHosts) {
-
+  opt.port = args.port || args.p || 80;
+  opt.modifyHosts = args.hosts || args.h;
+  if (opt.modifyHosts) {
+    opt.port = 80;
   }
   if (!fs.existsSync(dir)) {
     dir = path.join(process.cwd(), '/data.json');
@@ -25,9 +26,7 @@ bootstrap = function() {
     console.log(("invalid data path: " + dir).red);
     return;
   }
-  server = new MockServer(dir, {
-    port: port
-  });
+  server = new MockServer(dir, opt);
   return process.on('SIGINT', function() {
     server.close();
     console.log("server stopped.".red);

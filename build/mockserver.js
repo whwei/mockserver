@@ -37,10 +37,12 @@ MockServer = (function() {
     } catch (_error) {
       e = _error;
       console.error(("fail to load data: " + dataPath).red);
-      throw e;
     }
-    this._option = _.extend(defaultOpt, option);
-    this._option.domain = mockData.domain;
+    this._option = {};
+    this._option.domain = mockData.domain || 'localhost';
+    this._option.port = mockData.port || 80;
+    this._option = _.extend(this._option, defaultOpt, option);
+    option = this._option;
     originalLog = console.log;
     console.log = (function(_this) {
       return function() {
@@ -61,9 +63,11 @@ MockServer = (function() {
         return _this.addMap(map);
       };
     })(this));
-    this.backupHosts();
-    this.addHosts();
-    this._server = this._app.listen(this._option.port, (function(_this) {
+    if (this._option.modifyHosts) {
+      this.backupHosts();
+      this.addHosts();
+    }
+    this._server = this._app.listen(option.port, (function(_this) {
       return function() {
         console.log(("Starting up server at port: " + _this._option.port).yellow);
         return console.log('Hit CTRL-C to stop the server'.yellow);
@@ -75,11 +79,13 @@ MockServer = (function() {
     return this._server;
   };
 
-  MockServer.prototype.close = function() {
+  MockServer.prototype.close = function(cb) {
     if (this._server) {
-      this._server.close();
+      this._server.close(cb);
     }
-    return this.restoreHosts();
+    if (this._option.modifyHosts) {
+      return this.restoreHosts();
+    }
   };
 
   MockServer.prototype.addMap = function(map) {

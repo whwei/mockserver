@@ -91,7 +91,6 @@ class MockServer
         path = map['path'] ? '/'
         response = map['response']
         dataType = map['type']
-        port = ":#{@_option.port}"
 
 #        if port is ':80' then port = ''
 #
