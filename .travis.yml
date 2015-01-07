@@ -1,5 +1,5 @@
 language: node_js
-script: "sudo $(which npm) test"
+script: "sudo npm test"
 node_js:
   - "0.11"
   - "0.10"

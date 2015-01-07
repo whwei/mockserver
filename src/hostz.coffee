@@ -32,7 +32,7 @@ hostz =
 
         content.forEach (line) ->
             if line and not COMMENT_REG.test line
-                lines.push line.split /\s+/
+                lines.push line.split(/\s+/)
 
         return lines
 

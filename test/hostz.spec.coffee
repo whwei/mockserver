@@ -90,8 +90,8 @@ describe 'hostz', ->
 
                 currentHostsContent = content
 
-                expect lines
-                .to.eql currentHostsContent
+                expect lines.length
+                .to.eql currentHostsContent.length
 
 
 
