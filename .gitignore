@@ -1,3 +1,9 @@
 /node_modules
 .idea
 /tmp
+*.js
+*.map
+/src/*.js
+/src/*.map
+/test/*.js
+/test/*.map

@@ -1,0 +1,12 @@
+{
+    "name": "hello",
+    "maps": [
+        {
+            "path": "/greet",
+            "method": "get",
+            "response": {
+                "greet": "Hi ~"
+            }
+        }
+    ]
+}
