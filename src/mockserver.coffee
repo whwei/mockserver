@@ -56,6 +56,7 @@ class MockServer
         mockData.maps.forEach (map) =>
             @addMap map
 
+        # modify hosts file
         if @_option.modifyHosts
             # backup hosts
             @backupHosts()
@@ -63,16 +64,16 @@ class MockServer
             # modify hosts
             @addHosts()
 
+        # start server
         @_server = @_app.listen option.port, =>
-            console.log "Starting up server at port: #{@_option.port}".yellow
+            console.log "Starting up server at port: #{@_option.domain}:#{@_option.port}".yellow
             console.log 'Hit CTRL-C to stop the server'.yellow
-
 
     server: ->
         return @_server;
 
 
-
+    # close server, if hosts file is modified, restore it
     close: (cb)->
         if @_server
             @_server.close cb
@@ -84,31 +85,26 @@ class MockServer
 
     # add a map to the server
     addMap: (map) ->
-        if !map
-            throw new Error 'map is required'
+        if !map then return
 
         method = map['method'] ? 'get'
         path = map['path'] ? '/'
         response = map['response']
         dataType = map['type']
 
-#        if port is ':80' then port = ''
-#
-#        if method is 'get'
-#            path = "http://localhost#{port}#{map['path']}"
-#        console.warn 'method:' + method + ' at port:' + @_option.port + '  ++ map:' + map['path'] + ' --- path:' + path
-
         @_app[method] path, (req, res) ->
             query = url.parse(req.url, true).query
             cb = query['callback'] or query['cb']
             result = response
 
+            # if response is a function, invoke it to get the result data
             if typeof response is 'function'
                 response = response(req)
 
             # log req
             console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
 
+            # support for jsonp
             if dataType is 'jsonp' and cb
                 res.setHeader 'Content-Type', 'application/javascript'
                 res.end "#{cb}&&#{cb}(#{JSON.stringify(result)})"
