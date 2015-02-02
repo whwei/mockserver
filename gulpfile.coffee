@@ -5,7 +5,7 @@ coffee = require 'gulp-coffee'
 gulp.task 'default', ['watch-test']
 
 
-gulp.task 'build', ->
+gulp.task 'build', ['compile-coffee']
 
 
 gulp.task 'compile-coffee', ->

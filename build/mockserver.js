@@ -27,7 +27,7 @@ corsMiddleWare = function(req, res, next) {
 
 MockServer = (function() {
   function MockServer(dataPath, option) {
-    var e, mockData, originalLog;
+    var mockData, originalLog;
     if (!dataPath) {
       throw new Error('mock data requried');
     }
@@ -35,7 +35,6 @@ MockServer = (function() {
     try {
       mockData = require(dataPath);
     } catch (_error) {
-      e = _error;
       console.error(("fail to load data: " + dataPath).red);
     }
     this._option = {};
@@ -69,7 +68,7 @@ MockServer = (function() {
     }
     this._server = this._app.listen(option.port, (function(_this) {
       return function() {
-        console.log(("Starting up server at port: " + _this._option.port).yellow);
+        console.log(("Starting up server at port: " + _this._option.domain + ":" + _this._option.port).yellow);
         return console.log('Hit CTRL-C to stop the server'.yellow);
       };
     })(this));
@@ -91,7 +90,7 @@ MockServer = (function() {
   MockServer.prototype.addMap = function(map) {
     var dataType, method, path, response, _ref, _ref1;
     if (!map) {
-      throw new Error('map is required');
+      return;
     }
     method = (_ref = map['method']) != null ? _ref : 'get';
     path = (_ref1 = map['path']) != null ? _ref1 : '/';
@@ -103,7 +102,7 @@ MockServer = (function() {
       cb = query['callback'] || query['cb'];
       result = response;
       if (typeof response === 'function') {
-        response = response(req);
+        result = response(req);
       }
       console.log('[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline);
       if (dataType === 'jsonp' && cb) {

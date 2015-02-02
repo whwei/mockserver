@@ -28,7 +28,7 @@ class MockServer
         mockData = {};
         try
             mockData = require dataPath
-        catch e
+        catch
             console.error "fail to load data: #{dataPath}".red
 
         @_option = {}
@@ -99,7 +99,7 @@ class MockServer
 
             # if response is a function, invoke it to get the result data
             if typeof response is 'function'
-                response = response(req)
+                result = response(req)
 
             # log req
             console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
