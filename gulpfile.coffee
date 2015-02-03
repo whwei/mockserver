@@ -13,7 +13,7 @@ gulp.task 'compile-coffee', ->
     .pipe coffee({bare: true})
     .on 'error', (err) ->
         console.log err
-    .pipe gulp.dest('build/')
+    .pipe gulp.dest('lib/')
 
 gulp.task 'watch', ->
     gulp.watch 'src/**/*.coffee', ['compile-coffee']

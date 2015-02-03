@@ -3,7 +3,7 @@ var url = require('url');
 var mockData = {
     name: 'fixture',
     domain: 'api.interfacedomain.com',
-    maps: [
+    routes: [
         {
             path: '/people',
             method: 'get',

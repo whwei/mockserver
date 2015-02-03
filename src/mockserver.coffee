@@ -50,11 +50,11 @@ class MockServer
             @_app.use corsMiddleWare
 
         # route
-        if !mockData.maps
+        if !mockData.routes
             throw new Error 'Invalid mapping data'
 
-        mockData.maps.forEach (map) =>
-            @addMap map
+        mockData.routes.forEach (route) =>
+            @addRoute route
 
         # modify hosts file
         if @_option.modifyHosts
@@ -83,14 +83,15 @@ class MockServer
 
 
 
-    # add a map to the server
-    addMap: (map) ->
-        if !map then return
+    # add a route to the server
+    addRoute: (route) ->
+        if !route then return
 
-        method = map['method'] ? 'get'
-        path = map['path'] ? '/'
-        response = map['response']
-        dataType = map['type']
+        method = route['method'] ? 'get'
+        path = route['path'] ? '/'
+        response = route['response']
+        dataType = route['type']
+        delay = route['delay'] or 0
 
         @_app[method] path, (req, res) ->
             query = url.parse(req.url, true).query
@@ -104,12 +105,20 @@ class MockServer
             # log req
             console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
 
-            # support for jsonp
-            if dataType is 'jsonp' and cb
-                res.setHeader 'Content-Type', 'application/javascript'
-                res.end "#{cb}&&#{cb}(#{JSON.stringify(result)})"
+            respond = (result) ->
+                if dataType is 'jsonp' and cb
+                    res.setHeader 'Content-Type', 'application/javascript'
+                    res.end "#{cb}&&#{cb}(#{JSON.stringify(result)})"
+                else
+                    res.json result
+
+            if delay and typeof delay is 'number'
+                setTimeout ->
+                    respond result
+                ,
+                delay
             else
-                res.json result
+                respond result
 
 
     # add hosts

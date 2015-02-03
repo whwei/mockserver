@@ -1,5 +1,5 @@
 {
-  "name": "MockServer",
+  "name": "mockserver",
   "version": "0.0.1",
   "description": "mock http request",
   "main": "bin/command.js",
