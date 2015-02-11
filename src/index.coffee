@@ -4,6 +4,7 @@ fs = require 'fs'
 path = require 'path'
 MockServer = require('./mockserver').MockServer
 
+
 bootstrap = ->
 
     opt = {}
@@ -23,8 +24,18 @@ bootstrap = ->
 
     server = new MockServer dir, opt
 
-    process.on 'SIGINT', ()->
+    restart = ->
+        if server then server.close()
+
+        server = new MockServer dir, opt
+
+
+    fs.watchFile dir, restart
+
+    process.on 'SIGINT', ->
         server.close()
+        fs.unwatchFile dir, restart
+
         console.log "server stopped.".red
         process.exit()
 

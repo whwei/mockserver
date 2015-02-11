@@ -1,7 +1,7 @@
 var url = require('url');
 
 var mockData = {
-    name: 'fixture',
+    name: 'fixture2',
     domain: 'api.interfacedomain.com',
     routes: [
         {
@@ -82,3 +82,4 @@ var mockData = {
 };
 
 module.exports = mockData;
+

@@ -2,6 +2,8 @@ http = require 'http'
 _ = require 'underscore'
 hostz = require './hostz'
 url = require 'url'
+fs = require 'fs'
+path = require 'path'
 colors = require 'colors'
 express = require 'express'
 
@@ -18,36 +20,63 @@ corsMiddleWare = (req, res, next) ->
 
     next()
 
+
+wrapModule = (def, md) ->
+    return "(function(exports, require, module){#{def}})(#{md}.exports, require, #{md})"
+
+
 class MockServer
     constructor: (dataPath, option) ->
 
         if !dataPath
-            throw new Error 'mock data requried'
-
+            throw new Error 'mock data required'
+        console.log dataPath
         # read mock data
         mockData = {};
         try
-            mockData = require dataPath
+            type = path.extname dataPath
+
+            if type is '.json'
+                strData = fs.readFileSync(dataPath, {encoding: 'utf8'}).replace(/\n|\r/g, '')
+
+                mockData = JSON.parse strData
+            else if type is '.js'
+                md = {
+                    exports: {}
+                }
+
+                wrappedDef = wrapModule(fs.readFileSync(dataPath, {encoding: 'utf8'}), 'md').replace(/\n|\r/g, '')
+
+                eval wrappedDef
+
+                mockData = md.exports
+
         catch
             console.error "fail to load data: #{dataPath}".red
 
+
+        # merge option
         @_option = {}
         @_option.domain = mockData.domain or 'localhost'
         @_option.port = mockData.port or 80
         @_option = _.extend(@_option, defaultOpt, option)
         option = @_option
 
+
         originalLog = console.log
         console.log = () =>
             if @_option.log
                 originalLog.apply console, arguments
 
+
         # init server
         @_app = express()
+
 
         # CORS
         if @_option.cors is true
             @_app.use corsMiddleWare
+
 
         # route
         if !mockData.routes
@@ -56,24 +85,24 @@ class MockServer
         mockData.routes.forEach (route) =>
             @addRoute route
 
+
         # modify hosts file
         if @_option.modifyHosts
-            # backup hosts
             @backupHosts()
 
-            # modify hosts
             @addHosts()
+
 
         # start server
         @_server = @_app.listen option.port, =>
-            console.log "Starting up server at port: #{@_option.domain}:#{@_option.port}".yellow
+            console.log "Starting up server at port: #{@_option.port}".yellow
             console.log 'Hit CTRL-C to stop the server'.yellow
 
     server: ->
         return @_server;
 
 
-    # close server, if hosts file is modified, restore it
+    # close server, if the hosts file was modified, restore it
     close: (cb)->
         if @_server
             @_server.close cb
@@ -83,17 +112,17 @@ class MockServer
 
 
 
-    # add a route to the server
+    # add a route to the express app
     addRoute: (route) ->
         if !route then return
 
         method = route['method'] ? 'get'
-        path = route['path'] ? '/'
+        route = route['path'] ? '/'
         response = route['response']
         dataType = route['type']
         delay = route['delay'] or 0
 
-        @_app[method] path, (req, res) ->
+        @_app[method] route, (req, res) ->
             query = url.parse(req.url, true).query
             cb = query['callback'] or query['cb']
             result = response
@@ -121,7 +150,6 @@ class MockServer
                 respond result
 
 
-    # add hosts
     addHosts: ->
         target = @_option.domain;
 
@@ -130,11 +158,11 @@ class MockServer
         catch e
             console.log e
 
-    # backup hosts
+
     backupHosts: ->
         hostz.backup()
 
-    # restore hosts
+
     restoreHosts: ->
         hostz.restore()
 

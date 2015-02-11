@@ -1,14 +1,18 @@
 MockServer = require('../src/mockserver').MockServer
 http = require 'http'
 fs = require 'fs'
+path = require 'path'
 hostile = require 'hostile'
+
+mockJS = path.join __dirname, '../test/fixture/data.js'
+mockJSON = path.join __dirname, '../test/fixture/data.json'
 
 describe 'MockServer', ->
     describe '#createServer', ->
         server = null;
 
         beforeEach () ->
-            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
+            server = new MockServer mockJSON, {modifyHosts: true, log: false}
 
         afterEach () ->
             server.close()
@@ -34,7 +38,7 @@ describe 'MockServer', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
             try
-                anotherServer = new MockServer '../test/fixture/data.js', {modifyHosts: false, log: false}
+                anotherServer = new MockServer mockJS, {modifyHosts: false, log: false}
             catch e
                 console.log e
 
@@ -53,7 +57,7 @@ describe 'MockServer', ->
             serverAtCustomPort = null
 
             try
-                serverAtCustomPort = new MockServer '../test/fixture/data.js', { port: 9090, log: false }
+                serverAtCustomPort = new MockServer mockJS, { port: 9090, log: false }
             catch e
                 console.log e
 
@@ -80,7 +84,7 @@ describe 'server', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
+            server = new MockServer mockJSON, {modifyHosts: true, log: false}
 
 
             backup = 'backup'
@@ -112,7 +116,7 @@ describe 'server', ->
             original = 'original'
             original = fs.readFileSync hostile.HOSTS, 'utf-8'
 
-            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
+            server = new MockServer mockJSON, {modifyHosts: true, log: false}
             server.restoreHosts()
 
             current = 'backup'
@@ -134,7 +138,7 @@ describe 'server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
+            server = new MockServer mockJSON, {modifyHosts: true, log: false}
 
         afterEach ->
             server.close()
@@ -151,7 +155,7 @@ describe 'server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', {modifyHosts: true, log: false}
+            server = new MockServer mockJSON, {modifyHosts: true, log: false}
 
         afterEach ->
             server.close()
@@ -167,7 +171,7 @@ describe 'server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.json', { modifyHosts: true, log: false }
+            server = new MockServer mockJSON, { modifyHosts: true, log: false }
 
         afterEach ->
             server.close()
@@ -242,7 +246,7 @@ describe 'server', ->
         server = null
 
         beforeEach ->
-            server = new MockServer '../test/fixture/data.js', {modifyHosts: true, log: false }
+            server = new MockServer mockJS, {modifyHosts: true, log: false }
 
         afterEach ->
             server.close()
