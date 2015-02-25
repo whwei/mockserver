@@ -25,9 +25,10 @@ bootstrap = ->
     server = new MockServer dir, opt
 
     restart = ->
-        if server then server.close()
-
-        server = new MockServer dir, opt
+        if server
+            console.log 'mock data update: restarting server...'
+            server.close ->
+                server = new MockServer dir, opt
 
 
     fs.watchFile dir, restart

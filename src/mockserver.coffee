@@ -30,7 +30,7 @@ class MockServer
 
         if !dataPath
             throw new Error 'mock data required'
-        console.log dataPath
+
         # read mock data
         mockData = {};
         try
@@ -98,12 +98,28 @@ class MockServer
             console.log "Starting up server at port: #{@_option.port}".yellow
             console.log 'Hit CTRL-C to stop the server'.yellow
 
+
+        # remember sockets
+        @_sockets = {}
+        socketId = 0
+        @_server.on 'connection', (socket) =>
+            id = socketId++
+            @_sockets[id] = socket
+
+            socket.on 'close', =>
+                delete @_sockets[id]
+
+
     server: ->
         return @_server;
 
 
-    # close server, if the hosts file was modified, restore it
+    # close server, if the hosts file was modified then restore it
     close: (cb)->
+        # destroy sockets manually so that we can close server immediately
+        for socket of @_sockets
+            @_sockets[socket] && @_sockets[socket].destroy()
+
         if @_server
             @_server.close cb
 
@@ -117,12 +133,13 @@ class MockServer
         if !route then return
 
         method = route['method'] ? 'get'
-        route = route['path'] ? '/'
+        apiPath = route['path'] ? '/'
         response = route['response']
         dataType = route['type']
         delay = route['delay'] or 0
 
-        @_app[method] route, (req, res) ->
+        @_app[method] apiPath, (req, res) ->
+
             query = url.parse(req.url, true).query
             cb = query['callback'] or query['cb']
             result = response

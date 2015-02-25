@@ -14,7 +14,7 @@ var mockData = {
                     count++;
                     return {
                         id: count,
-                        name: 'people ' + count
+                        name: 'people' + count
                     };
                 }
             })()
@@ -39,7 +39,9 @@ var mockData = {
             path: '/player',
             method: 'get',
             response: function(req) {
-                var query = url.parse(req.url).query;
+                var query = url.parse(req.url).query || {};
+
+
 
                 switch(query.team) {
                     case 'rockets':
