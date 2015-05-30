@@ -24,7 +24,6 @@
   "dependencies": {
     "coffee-script": "^1.8.0",
     "express": "^4.10.1",
-    "hostile": "^1.0.0",
     "underscore": "^1.7.0",
     "optimist": "~0.6.1",
     "minimist": "~1.1.0",

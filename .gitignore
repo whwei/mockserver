@@ -7,3 +7,4 @@
 /src/*.map
 /test/*.js
 /test/*.map
+.DS_Store
