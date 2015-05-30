@@ -2,17 +2,19 @@ MockServer = require('../src/mockserver').MockServer
 http = require 'http'
 fs = require 'fs'
 path = require 'path'
-hostile = require 'hostile'
 
 mockJS = path.join __dirname, '../test/fixture/data.js'
 mockJSON = path.join __dirname, '../test/fixture/data.json'
+
+defaultOption = 
+    log: false
 
 describe 'MockServer', ->
     describe '#createServer', ->
         server = null;
 
         beforeEach () ->
-            server = new MockServer mockJSON, {modifyHosts: true, log: false}
+            server = new MockServer mockJSON, defaultOption
 
         afterEach () ->
             server.close()
@@ -32,28 +34,8 @@ describe 'MockServer', ->
             cb()
 
     describe '#createServer option', ->
-        it 'should not modify the hosts file when param modifyHosts is false', (cb) ->
-            anotherServer = null
 
-            original = 'original'
-            original = fs.readFileSync hostile.HOSTS, 'utf-8'
-            try
-                anotherServer = new MockServer mockJS, {modifyHosts: false, log: false}
-            catch e
-                console.log e
-
-            current = 'backup'
-            current = fs.readFileSync hostile.HOSTS, 'utf-8'
-
-            expect original
-            .to.eql current
-
-            if anotherServer
-                anotherServer.close cb
-
-
-
-        it 'should create a server at port specified by param port', (cb) ->
+        it 'should create a server at port specified by param `port`', (cb) ->
             serverAtCustomPort = null
 
             try
@@ -70,115 +52,19 @@ describe 'MockServer', ->
 
 
 describe 'server', ->
-    describe '#backupHosts', ->
-        it 'should backup hosts file', () ->
-            exist = 0;
-            try
-                fs.readFileSync "#{hostile.HOSTS}.backup", 'utf-8'
-            catch e
-                exist = 1
-
-            expect exist
-                .to.eql 1
-
-            original = 'original'
-            original = fs.readFileSync hostile.HOSTS, 'utf-8'
-
-            server = new MockServer mockJSON, {modifyHosts: true, log: false}
-
-
-            backup = 'backup'
-            try
-                backup = fs.readFileSync "#{hostile.HOSTS}.backup", 'utf-8'
-            catch e
-                exist = 2
-
-            expect exist
-                .to.eql 1
-
-            expect original
-                .to.eql backup
-
-            server.close()
-
-
-    describe '#restoreHosts', ->
-        it 'should backup hosts file', () ->
-            exist = 0;
-            try
-                fs.readFileSync "#{hostile.HOSTS}.backup", 'utf-8'
-            catch e
-                exist = 1
-
-            expect exist
-                .to.eql 1
-
-            original = 'original'
-            original = fs.readFileSync hostile.HOSTS, 'utf-8'
-
-            server = new MockServer mockJSON, {modifyHosts: true, log: false}
-            server.restoreHosts()
-
-            current = 'backup'
-            try
-                current = fs.readFileSync hostile.HOSTS, 'utf-8'
-            catch e
-                exist = 2
-
-            expect exist
-                .to.eql 1
-
-            expect original
-                .to.eql current
-
-            server.close()
-
-
-    describe '#addHosts', ->
-        server = null;
-
-        beforeEach ->
-            server = new MockServer mockJSON, {modifyHosts: true, log: false}
-
-        afterEach ->
-            server.close()
-
-        it 'should add rule to hosts file', () ->
-            hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
-
-            expect hostsContent
-                .to.contain '127.0.0.1 api.interfacedomain.com'
-
-
-
-    describe '#addHosts', ->
-        server = null;
-
-        beforeEach ->
-            server = new MockServer mockJSON, {modifyHosts: true, log: false}
-
-        afterEach ->
-            server.close()
-
-        it 'should add rule to hosts file', () ->
-            hostsContent = fs.readFileSync hostile.HOSTS, 'utf-8'
-
-            expect hostsContent
-            .to.contain '127.0.0.1 api.interfacedomain.com'
-
 
     describe 'should set up a local server', ->
         server = null;
 
         beforeEach ->
-            server = new MockServer mockJSON, { modifyHosts: true, log: false }
+            server = new MockServer mockJSON, defaultOption
 
         afterEach ->
             server.close()
 
 
         it 'intercept the request and respond corresponding mock data', (cb) ->
-            localRequest = request 'http://api.interfacedomain.com'
+            localRequest = request 'http://localhost:9222'
 
             localRequest.get '/people'
             .expect 200
@@ -212,7 +98,7 @@ describe 'server', ->
 
 
         it 'should support CORS', (cb) ->
-            localRequest = request 'http://api.interfacedomain.com'
+            localRequest = request 'http://localhost:9222'
 
             localRequest.post '/people'
                 .expect 200
@@ -230,7 +116,7 @@ describe 'server', ->
 
 
         it 'should support jsonp', (cb) ->
-            localRequest = request 'http://api.interfacedomain.com'
+            localRequest = request 'http://localhost:9222'
 
             localRequest.get '/people_jsonp'
             .query { callback: 'cbFn'}
@@ -252,7 +138,7 @@ describe 'server', ->
             server.close()
 
         it 'should receive a data.js file',  ->
-            localRequest = request 'http://api.interfacedomain.com'
+            localRequest = request 'http://localhost:9222'
 
             localRequest.get '/people'
             .expect 200
@@ -260,7 +146,7 @@ describe 'server', ->
 
 
         it 'should respond dynamically',  ->
-            localRequest = request 'http://api.interfacedomain.com'
+            localRequest = request 'http://localhost:9222'
 
             localRequest.get '/people'
             .expect 200
@@ -276,7 +162,7 @@ describe 'server', ->
 
 
         it 'should supoort dynamic jsonp request', () ->
-            localRequest = request 'http://api.interfacedomain.com'
+            localRequest = request 'http://localhost:9222'
 
             localRequest.get '/people_jsonp'
             .query { callback: 'cbFn'}
@@ -302,7 +188,7 @@ describe 'server', ->
 
 
         it 'should respond by query',  ->
-            localRequest = request 'http://api.interfacedomain.com'
+            localRequest = request 'http://localhost:9222'
 
             localRequest.get '/people'
             .query('team', 'rockets')

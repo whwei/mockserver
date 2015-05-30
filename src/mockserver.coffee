@@ -1,6 +1,5 @@
 http = require 'http'
 _ = require 'underscore'
-hostz = require './hostz'
 url = require 'url'
 fs = require 'fs'
 path = require 'path'
@@ -8,7 +7,7 @@ colors = require 'colors'
 express = require 'express'
 
 defaultOpt =
-    port: 80
+    port: 9222
     cors: true
     log: true
 
@@ -86,13 +85,6 @@ class MockServer
             @addRoute route
 
 
-        # modify hosts file
-        if @_option.modifyHosts
-            @backupHosts()
-
-            @addHosts()
-
-
         # start server
         @_server = @_app.listen option.port, =>
             console.log "Starting up server at port: #{@_option.port}".yellow
@@ -114,7 +106,7 @@ class MockServer
         return @_server;
 
 
-    # close server, if the hosts file was modified then restore it
+    # close server
     close: (cb)->
         # destroy sockets manually so that we can close server immediately
         for socket of @_sockets
@@ -122,9 +114,6 @@ class MockServer
 
         if @_server
             @_server.close cb
-
-        if @_option.modifyHosts
-            @restoreHosts()
 
 
 
@@ -165,23 +154,6 @@ class MockServer
                 delay
             else
                 respond result
-
-
-    addHosts: ->
-        target = @_option.domain;
-
-        try
-            hostz.add '127.0.0.1', target
-        catch e
-            console.log e
-
-
-    backupHosts: ->
-        hostz.backup()
-
-
-    restoreHosts: ->
-        hostz.restore()
 
 
 
