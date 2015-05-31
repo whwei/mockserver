@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "mock http request",
   "main": "bin/command.js",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/whwei/mockserver"
+  },
   "preferGlobal": true,
   "bin": {
     "mockserver": "bin/command.js"
