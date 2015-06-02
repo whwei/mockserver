@@ -57,7 +57,6 @@ class MockServer
         # merge option
         @_option = {}
         @_option.domain = mockData.domain or 'localhost'
-        @_option.port = mockData.port or 80
         @_option = _.extend(@_option, defaultOpt, option)
         option = @_option
 
@@ -157,4 +156,4 @@ class MockServer
 
 
 
-exports.MockServer = MockServer
+module.exports = MockServer

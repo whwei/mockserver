@@ -1,4 +1,4 @@
-MockServer = require('../src/mockserver').MockServer
+MockServer = require('../src/mockserver')
 http = require 'http'
 fs = require 'fs'
 path = require 'path'

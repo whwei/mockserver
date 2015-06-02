@@ -2,7 +2,7 @@ args = require('optimist').argv
 colors = require 'colors'
 fs = require 'fs'
 path = require 'path'
-MockServer = require('./mockserver').MockServer
+MockServer = require('./mockserver')
 
 
 bootstrap = ->
