@@ -11,7 +11,8 @@ bootstrap = ->
 
     dir = path.join process.cwd(), (args.data || args.d ? '/data.js')
 
-    opt.port = args.port or args.p or 80
+    opt.port = args.port or args.p
+    opt.cors = args.cors or args.c
 
     if not fs.existsSync dir
         dir = path.join process.cwd(), '/data.json'
