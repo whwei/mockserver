@@ -1,38 +1,34 @@
-### Mockserver
-==========
+# Mockserver
 set up your api server using local config file.
 
 [![Build Status](https://travis-ci.org/whwei/mockserver.svg?branch=master)](https://travis-ci.org/whwei/mockserver)
 
-### Install
-=========
+## Install
 ```
 git clone https://github.com/whwei/mockserver.git
 cd mockserver
 npm link
 ```
 
-### Usage
-=========
+## Usage
 to start a server:
 ```
 mockserver -d path-to-config-file.json
 ```
+
 or, you already have a config file named `data.js` or `data.json` in current directory, just type:
 ```
 mockserver
 ```
 
-### Options
-=========
+## Options
 -   `-d`: config file path
 -   `-p`: port
 -   `-c`: support CORS
 
-### Config file
-=========
-#### JSON
-```
+## Config file
+### JSON
+```json
 // data.json
 {
     "name": "fixture",
@@ -55,8 +51,8 @@ mockserver
 }
 ```
 
-#### JS
-```
+### JS
+```javascript
 // data.js
 
 var data = {
@@ -84,7 +80,7 @@ module.exports = data;
 ```
 
 you can respond different data according to the `request`.
-```
+```javascript
 var data = {
     name: 'api',
     routes: [
