@@ -1,6 +1,5 @@
 {
     "name": "fixture",
-    "domain": "api.interfacedomain.com",
     "routes": [
         {
             "path": "/people",

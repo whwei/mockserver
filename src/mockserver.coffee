@@ -56,7 +56,6 @@ class MockServer
 
         # merge option
         @_option = {}
-        @_option.domain = mockData.domain or 'localhost'
         @_option = _.extend(@_option, defaultOpt, option)
         option = @_option
 

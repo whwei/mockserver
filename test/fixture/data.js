@@ -2,7 +2,6 @@ var url = require('url');
 
 var mockData = {
     name: 'fixture2',
-    domain: 'api.interfacedomain.com',
     routes: [
         {
             path: '/people',
