@@ -4,8 +4,8 @@
   "description": "mock http request",
   "main": "bin/command.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/whwei/mockserver"
+    "type": "git",
+    "url": "https://github.com/whwei/mockserver"
   },
   "preferGlobal": true,
   "bin": {
@@ -27,10 +27,12 @@
   },
   "dependencies": {
     "coffee-script": "^1.8.0",
+    "colors": "~1.0.3",
+    "cors": "^2.7.1",
     "express": "^4.10.1",
-    "underscore": "^1.7.0",
-    "optimist": "~0.6.1",
+    "express-http-proxy": "^0.6.0",
     "minimist": "~1.1.0",
-    "colors": "~1.0.3"
+    "optimist": "~0.6.1",
+    "underscore": "^1.7.0"
   }
 }

@@ -1,24 +1,16 @@
-http = require 'http'
-_ = require 'underscore'
-url = require 'url'
-fs = require 'fs'
-path = require 'path'
-colors = require 'colors'
+http    = require 'http'
+_       = require 'underscore'
+url     = require 'url'
+fs      = require 'fs'
+path    = require 'path'
+colors  = require 'colors'
 express = require 'express'
+proxy   = require 'express-http-proxy'
+cors    = require 'cors'
 
 defaultOpt =
     port: 9222
-    cors: true
     log: true
-
-
-corsMiddleWare = (req, res, next) ->
-    res.header 'Access-Control-Allow-Origin', '*'
-    res.header 'Access-Control-Allow-Method', 'GET, PUT, POST, DELETE'
-    res.header 'Access-Control-Allow-Header', 'Content-Type'
-
-    next()
-
 
 wrapModule = (def, md) ->
     return "(function(exports, require, module){#{def}})(#{md}.exports, require, #{md})"
@@ -44,7 +36,7 @@ class MockServer
                     exports: {}
                 }
 
-                wrappedDef = wrapModule(fs.readFileSync(dataPath, {encoding: 'utf8'}), 'md').replace(/\n|\r/g, '')
+                wrappedDef = wrapModule(fs.readFileSync(dataPath, {encoding: 'utf8'}), 'md')
 
                 eval wrappedDef
 
@@ -68,11 +60,6 @@ class MockServer
 
         # init server
         @_app = express()
-
-
-        # CORS
-        if @_option.cors is true
-            @_app.use corsMiddleWare
 
 
         # route
@@ -134,7 +121,7 @@ class MockServer
             # if response is a function, invoke it to get the result data
             if typeof response is 'function'
                 result = response(req)
-
+            
             # log req
             console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
 
