@@ -62,12 +62,29 @@ class MockServer
         @_app = express()
 
 
-        # route
-        if !mockData.routes
-            throw new Error 'Invalid mapping data'
+        # PROXY
+        if mockData.proxy
+            @_app.use '/', proxy mockData.proxy, {
+                forwardPath: (req, res) =>
+                    return url.parse(req.url).path
+                intercept: (rsp, data, req, res, callback) =>
+                    if mockData.cors
+                        headers = req.get('Access-Control-Request-Headers')
+                        if (headers)
+                            res.set('Access-Control-Allow-Headers', headers)
+                        res.set('Access-Control-Allow-Methods', 'GET, POST, PUT')
+                        res.set('Access-Control-Allow-Origin', '*')
 
-        mockData.routes.forEach (route) =>
-            @addRoute route
+                    callback(null, data)
+
+            }
+        else
+            # route
+            if !mockData.routes
+                throw new Error 'Invalid mapping data'
+
+            mockData.routes.forEach (route) =>
+                @addRoute route
 
 
         # start server
