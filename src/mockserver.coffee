@@ -79,6 +79,14 @@ class MockServer
 
             }
         else
+            # cors
+            if mockData.cors
+                @_app.use cors({
+                    origin: '*',
+                    methods: 'GET, PUT, POST',
+                    allowedHeaders: mockData.cors.allowedHeaders
+                })
+
             # route
             if !mockData.routes
                 throw new Error 'Invalid mapping data'
