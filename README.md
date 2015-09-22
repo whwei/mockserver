@@ -24,32 +24,8 @@ mockserver
 ## Options
 -   `-d`: config file path
 -   `-p`: port
--   `-c`: support CORS
 
 ## Config file
-### JSON
-```json
-// data.json
-{
-    "name": "fixture",
-    "routes": [
-        {
-            "path": "/people",
-            "method": "get",
-            "response": [
-                {
-                    "id": "000001",
-                    "name": "Alice"
-                },
-                {
-                    "id": "000002",
-                    "name": "Bob"
-                }
-            ]
-        }
-    ]
-}
-```
 
 ### JS
 ```javascript
@@ -57,6 +33,14 @@ mockserver
 
 var data = {
     name: 'api',
+
+    // support cors
+    cors: {
+        headers: 'X-Header, X-Header2'
+    },
+    
+    // use proxy
+    proxy: 'http:/www.proxy.com',
     routes: [
         {
             path: '/people',
@@ -97,4 +81,31 @@ var data = {
 };
 
 module.exports = data;
+```
+
+
+### JSON
+```json
+// data.json
+{
+    "name": "fixture",
+    "cors": ...,
+    "proxy": ...,
+    "routes": [
+        {
+            "path": "/people",
+            "method": "get",
+            "response": [
+                {
+                    "id": "000001",
+                    "name": "Alice"
+                },
+                {
+                    "id": "000002",
+                    "name": "Bob"
+                }
+            ]
+        }
+    ]
+}
 ```
