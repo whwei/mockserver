@@ -2,6 +2,9 @@ var url = require('url');
 
 var mockData = {
     name: 'fixture2',
+    cors: {
+        allowedHeaders: "X-Request-Header"
+    },
     routes: [
         {
             path: '/people',

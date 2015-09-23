@@ -106,10 +106,10 @@ describe 'server', ->
                     if res.headers['access-control-allow-origin'] isnt '*'
                         throw new Error 'access-control-allow-origin not set'
 
-                    if res.headers['access-control-allow-method'] isnt 'GET, PUT, POST, DELETE'
+                    if not res.headers['access-control-allow-method']
                         throw new Error 'access-control-allow-method not set'
 
-                    if res.header['access-control-allow-header'] isnt 'Content-Type'
+                    if not res.header['access-control-allow-header']
                         throw new Error 'access-control-allow-header not set'
 
                 .end cb

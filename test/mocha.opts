@@ -1,3 +1,2 @@
 --require test/support/helper.coffee
---reporter nyan
 --compilers coffee:coffee-script/register

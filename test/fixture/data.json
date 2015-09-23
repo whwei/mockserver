@@ -1,5 +1,8 @@
 {
     "name": "fixture",
+    "cors": {
+        "allowedHeaders": "X-Request-Header"
+    },
     "routes": [
         {
             "path": "/people",

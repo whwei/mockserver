@@ -36,7 +36,7 @@ var data = {
 
     // support cors
     cors: {
-        headers: 'X-Header, X-Header2'
+        allowedHeaders: 'X-Header, X-Header2'
     },
     
     // use proxy
@@ -86,11 +86,12 @@ module.exports = data;
 
 ### JSON
 ```json
-// data.json
 {
     "name": "fixture",
-    "cors": ...,
-    "proxy": ...,
+    "cors": {
+        "allowedHeaders": 'X-Header, X-Header2'
+    },
+    "proxy": true,
     "routes": [
         {
             "path": "/people",
