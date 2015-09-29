@@ -100,20 +100,30 @@ describe 'server', ->
         it 'should support CORS', (cb) ->
             localRequest = request 'http://localhost:9222'
 
-            localRequest.post '/people'
+            localRequest.get '/people'
                 .expect 200
                 .expect (res) ->
                     if res.headers['access-control-allow-origin'] isnt '*'
                         throw new Error 'access-control-allow-origin not set'
 
-                    if not res.headers['access-control-allow-method']
-                        throw new Error 'access-control-allow-method not set'
-
-                    if not res.header['access-control-allow-header']
-                        throw new Error 'access-control-allow-header not set'
-
                 .end cb
 
+
+        it 'should support preflighted CORS request', (cb) ->
+            localRequest = request 'http://localhost:9222'
+
+            localRequest.options '/people'
+                .set 'X-Request-Header', 'XXX'
+                .expect 204
+                .expect (res) ->
+                    console.log(res.headers['access-control-allow-headers'])
+                    if res.headers['access-control-allow-origin'] isnt '*'
+                        throw new Error 'access-control-allow-origin not set'
+                    
+                    if not res.headers['access-control-allow-methods']
+                        throw new Error 'access-control-allow-methods not set'
+
+                .end cb
 
         it 'should support jsonp', (cb) ->
             localRequest = request 'http://localhost:9222'

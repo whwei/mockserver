@@ -16,6 +16,10 @@ wrapModule = (def, md) ->
     return "(function(exports, require, module){#{def}})(#{md}.exports, require, #{md})"
 
 
+log = console.log.bind(console)
+
+noop = () -> {}
+
 class MockServer
     constructor: (dataPath, option) ->
 
@@ -51,17 +55,13 @@ class MockServer
         @_option = _.extend(@_option, defaultOpt, option)
         option = @_option
 
-
-        originalLog = console.log
-        console.log = () =>
-            if @_option.log
-                originalLog.apply console, arguments
+        if not @_option.log
+            log = noop
 
 
         # init server
         @_app = express()
-
-
+        
         # PROXY
         if mockData.proxy
             @_app.use '/', proxy mockData.proxy, {
@@ -74,16 +74,16 @@ class MockServer
                             res.set('Access-Control-Allow-Headers', headers)
                         res.set('Access-Control-Allow-Methods', 'GET, POST, PUT')
                         res.set('Access-Control-Allow-Origin', '*')
-
+                        
                     callback(null, data)
 
             }
         else
             # cors
-            if mockData.cors
+            if mockData.cors                
                 @_app.use cors({
                     origin: '*',
-                    methods: 'GET, PUT, POST',
+                    methods: ['GET','POST','PUT'],
                     allowedHeaders: mockData.cors.allowedHeaders
                 })
 
@@ -97,8 +97,8 @@ class MockServer
 
         # start server
         @_server = @_app.listen option.port, =>
-            console.log "Starting up server at port: #{@_option.port}".yellow
-            console.log 'Hit CTRL-C to stop the server'.yellow
+            log "Starting up server at port: #{@_option.port}".yellow
+            log 'Hit CTRL-C to stop the server'.yellow
 
 
         # remember sockets
@@ -148,7 +148,7 @@ class MockServer
                 result = response(req)
             
             # log req
-            console.log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
+            log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
 
             respond = (result) ->
                 if dataType is 'jsonp' and cb
