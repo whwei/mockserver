@@ -73,7 +73,7 @@ class MockServer
                         if (headers)
                             res.set('Access-Control-Allow-Headers', headers)
                         res.set('Access-Control-Allow-Methods', 'GET, POST, PUT')
-                        res.set('Access-Control-Allow-Origin', '*')
+                        res.set('Access-Control-Allow-Origin', mockData.cors.origin || '*')
                         
                     callback(null, data)
 
@@ -82,7 +82,7 @@ class MockServer
             # cors
             if mockData.cors                
                 @_app.use cors({
-                    origin: '*',
+                    origin: mockData.cors.origin || '*',
                     methods: ['GET','POST','PUT'],
                     allowedHeaders: mockData.cors.allowedHeaders
                 })

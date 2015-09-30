@@ -1,0 +1,9 @@
+{
+    "name": "fixture",
+    "cors": {
+        "origin": "http://localhost:8080"
+    },
+	"proxy": "https://api.github.com",
+    "routes": [
+    ]
+}

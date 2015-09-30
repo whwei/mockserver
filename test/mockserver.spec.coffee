@@ -5,6 +5,7 @@ path = require 'path'
 
 mockJS = path.join __dirname, '../test/fixture/data.js'
 mockJSON = path.join __dirname, '../test/fixture/data.json'
+proxyMockJSON = path.join __dirname, '../test/fixture/proxy.json'
 
 defaultOption = 
     log: false
@@ -116,7 +117,6 @@ describe 'server', ->
                 .set 'X-Request-Header', 'XXX'
                 .expect 204
                 .expect (res) ->
-                    console.log(res.headers['access-control-allow-headers'])
                     if res.headers['access-control-allow-origin'] isnt '*'
                         throw new Error 'access-control-allow-origin not set'
                     
@@ -136,13 +136,35 @@ describe 'server', ->
                     throw new Error 'Content-type not application/javascript'
 
             .end cb
+            
+            
+    describe 'should support proxy', ->
+        server = null
+        
+        beforeEach ->
+            server = new MockServer proxyMockJSON, { log: false }
+            
+        afterEach -> 
+            server.close()
+            
+        it 'should add cors header to response from target api', (cb) ->
+            this.timeout 5000
+            
+            proxyRequest = request 'http://localhost:9222'
+            
+            proxyRequest.get '/users/octocat'
+            .expect 200
+            .expect (res) ->
+                if res.headers['access-control-allow-origin'] isnt 'http://localhost:8080'
+                    throw new Error 'Access-Control-Allow-Origin is not overrided by proxy'
+            .end cb
 
 
     describe 'should allow dynamic response', ->
         server = null
 
         beforeEach ->
-            server = new MockServer mockJS, {modifyHosts: true, log: false }
+            server = new MockServer mockJS, { log: false }
 
         afterEach ->
             server.close()
