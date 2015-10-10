@@ -5,6 +5,14 @@
     },
     "routes": [
         {
+            "path": "/tags",
+            "method": "get",
+            "status": 500,
+            "response": {
+                "msg": "error"
+            }
+        },
+        {
             "path": "/people",
             "method": "get",
             "response": [

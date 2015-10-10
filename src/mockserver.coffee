@@ -61,7 +61,7 @@ class MockServer
 
         # init server
         @_app = express()
-        
+
         # PROXY
         if mockData.proxy
             @_app.use '/', proxy mockData.proxy, {
@@ -74,13 +74,13 @@ class MockServer
                             res.set('Access-Control-Allow-Headers', headers)
                         res.set('Access-Control-Allow-Methods', 'GET, POST, PUT')
                         res.set('Access-Control-Allow-Origin', mockData.cors.origin || '*')
-                        
+
                     callback(null, data)
 
             }
         else
             # cors
-            if mockData.cors                
+            if mockData.cors
                 @_app.use cors({
                     origin: mockData.cors.origin || '*',
                     methods: ['GET','POST','PUT'],
@@ -133,6 +133,7 @@ class MockServer
 
         method = route['method'] ? 'get'
         apiPath = route['path'] ? '/'
+        status = route['status'] ? 200
         response = route['response']
         dataType = route['type']
         delay = route['delay'] or 0
@@ -146,16 +147,16 @@ class MockServer
             # if response is a function, invoke it to get the result data
             if typeof response is 'function'
                 result = response(req)
-            
+
             # log req
             log '[%s] "%s %s" "%s"', (new Date).toLocaleString(), req.method.yellow, req.url.yellow, req.headers['user-agent'].cyan.underline
 
             respond = (result) ->
                 if dataType is 'jsonp' and cb
                     res.setHeader 'Content-Type', 'application/javascript'
-                    res.end "#{cb}&&#{cb}(#{JSON.stringify(result)})"
+                    res.status(status).end "#{cb}&&#{cb}(#{JSON.stringify(result)})"
                 else
-                    res.json result
+                    res.status(status).json result
 
             if delay and typeof delay is 'number'
                 setTimeout ->

@@ -38,9 +38,13 @@ var data = {
     cors: {
         allowedHeaders: 'X-Header, X-Header2'
     },
-    
+
+    // response status code
+    status: 200,
+
     // use proxy
     proxy: 'http:/www.proxy.com',
+
     routes: [
         {
             path: '/people',
@@ -91,6 +95,7 @@ module.exports = data;
     "cors": {
         "allowedHeaders": 'X-Header, X-Header2'
     },
+    "status": 200,
     "proxy": true,
     "routes": [
         {
