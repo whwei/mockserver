@@ -46,8 +46,8 @@ class MockServer
 
                 mockData = md.exports
 
-        catch
-            console.error "fail to load data: #{dataPath}".red
+        catch err
+            throw err
 
 
         # merge option

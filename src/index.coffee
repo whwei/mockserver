@@ -9,12 +9,12 @@ bootstrap = ->
 
     opt = {}
 
-    dir = path.join process.cwd(), (args.data || args.d ? '/data.js')
+    dir = path.join process.cwd(), (args.data || args.d ? './data.js')
 
     if args.port or args.p then opt.port = args.port
 
     if not fs.existsSync dir
-        dir = path.join process.cwd(), '/data.json'
+        dir = path.join process.cwd(), './data.json'
 
     if not fs.existsSync dir
         console.log "invalid data path: #{dir}".red
