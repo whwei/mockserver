@@ -36,7 +36,7 @@ var data = {
 
     // support cors
     cors: {
-        allowedHeaders: 'X-Header, X-Header2'
+        allowedHeaders: 'X-Header, X-Header-2'
     },
 
     // response status code
@@ -93,7 +93,7 @@ module.exports = data;
 {
     "name": "fixture",
     "cors": {
-        "allowedHeaders": 'X-Header, X-Header2'
+        "allowedHeaders": "X-Header, X-Header-2"
     },
     "status": 200,
     "proxy": true,
