@@ -3,3 +3,5 @@ node_js:
   - "0.12"
   - "0.11"
   - "0.10"
+before_install:
+  - composer config -g github-oauth.github.com a035d5283ed12d31e08b12fd186ac27bca779bca
