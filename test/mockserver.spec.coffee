@@ -161,7 +161,7 @@ describe 'server', ->
 
             proxyRequest = request 'http://localhost:9222'
 
-            proxyRequest.get '/users/octocat'
+            proxyRequest.get '/'
                 .expect 200
                 .expect (res) ->
                     if res.headers['access-control-allow-origin'] isnt 'http://localhost:8080'

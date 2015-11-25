@@ -3,7 +3,7 @@
     "cors": {
         "origin": "http://localhost:8080"
     },
-	"proxy": "https://api.github.com",
+	"proxy": "https://github.com",
     "routes": [
     ]
 }
