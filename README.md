@@ -42,8 +42,8 @@ var data = {
     // response status code
     status: 200,
 
-    // use proxy
-    proxy: 'http:/www.proxy.com',
+    // as proxy
+    proxy: 'http://www.proxy.com',
 
     routes: [
         {
@@ -96,7 +96,6 @@ module.exports = data;
         "allowedHeaders": "X-Header, X-Header-2"
     },
     "status": 200,
-    "proxy": true,
     "routes": [
         {
             "path": "/people",
